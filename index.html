@@ -1,212 +1,186 @@
 <!DOCTYPE html>
-
 <html lang="ru">
 <head>
-    <link rel="icon" type="image/png" href="favicon.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>PressLore</title>
+<link rel="icon" type="image/png" href="favicon.png">
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Segoe UI',sans-serif;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI,sans-serif}
 body{
-    background:linear-gradient(135deg,#071426,#0f172a);
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
+ min-height:100vh;color:white;overflow-x:hidden;
+ background:radial-gradient(circle at top,#14532d,#020617 55%);
 }
+.bg{
+ position:fixed;inset:0;z-index:-1;
+ background:
+ radial-gradient(circle at 20% 20%,rgba(34,197,94,.25),transparent 30%),
+ radial-gradient(circle at 80% 70%,rgba(59,130,246,.2),transparent 30%);
+ animation:float 8s infinite alternate ease-in-out;
+}
+@keyframes float{from{transform:scale(1)}to{transform:scale(1.08)}}
+
+nav{
+ display:flex;justify-content:space-between;align-items:center;
+ padding:25px 8%;animation:down .8s ease forwards;
+}
+.logo{font-size:28px;font-weight:800;color:#22c55e}
+nav a{color:#cbd5e1;text-decoration:none;margin-left:20px}
+nav a:hover{color:#22c55e}
+
+.hero{
+ min-height:80vh;display:flex;align-items:center;justify-content:center;
+ padding:40px 8%;gap:40px;flex-wrap:wrap;
+}
+.left{max-width:520px;animation:left .9s ease forwards}
+.left h1{font-size:58px;line-height:1.05}
+.left h1 span{color:#22c55e}
+.left p{margin-top:20px;color:#cbd5e1;font-size:19px}
+.buttons{margin-top:30px;display:flex;gap:15px;flex-wrap:wrap}
+.btn{
+ padding:14px 25px;border-radius:14px;text-decoration:none;
+ color:white;background:#22c55e;font-weight:700;transition:.25s;
+}
+.btn:hover{transform:translateY(-4px);box-shadow:0 10px 25px rgba(34,197,94,.35)}
+.btn.dark{background:#1e293b;border:1px solid #334155}
 
 .card{
-    width:500px;
-    background:#1e293b;
-    border-radius:24px;
-    padding:35px;
-    text-align:center;
-    color:white;
-    box-shadow:0 0 40px rgba(34,197,94,.25);
+ width:390px;background:rgba(15,23,42,.75);backdrop-filter:blur(14px);
+ border:1px solid rgba(148,163,184,.15);border-radius:25px;
+ padding:28px;box-shadow:0 0 50px rgba(34,197,94,.2);
+ animation:right .9s ease forwards;
 }
-
-.logo{
-    font-size:55px;
-    margin-bottom:10px;
-}
-
-.title{
-    font-size:38px;
-    color:#22c55e;
-    font-weight:bold;
-}
-
-.subtitle{
-    color:#94a3b8;
-    margin-bottom:25px;
-}
-
+.sword{font-size:48px;text-align:center;margin-bottom:10px}
+.server-title{text-align:center;font-size:30px;font-weight:800;color:#22c55e}
+.sub{text-align:center;color:#94a3b8;margin-bottom:20px}
 .box{
-    background:#0f172a;
-    padding:15px;
-    border-radius:14px;
-    margin-top:12px;
+ background:#020617;border-radius:15px;padding:14px;margin-top:12px;text-align:center;
 }
+.label{color:#94a3b8;font-size:14px}
+.value{font-size:21px;font-weight:800;margin-top:4px}
+.online{color:#22c55e}.offline{color:#ef4444}
+.copy{width:100%;margin-top:18px;border:0;border-radius:14px;padding:14px;
+ background:#22c55e;color:white;font-size:16px;font-weight:800;cursor:pointer}
 
-.label{
-    color:#94a3b8;
-    margin-bottom:5px;
+.features{
+ padding:40px 8%;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+ gap:18px;animation:up 1s ease forwards;
 }
+.feature{
+ background:rgba(30,41,59,.7);border:1px solid rgba(148,163,184,.12);
+ border-radius:20px;padding:22px;text-align:center;
+}
+.feature h3{color:#22c55e;margin-bottom:8px}
+.feature p{color:#cbd5e1}
 
-.value{
-    font-size:24px;
-    font-weight:bold;
-}
-
-.online{
-    color:#22c55e;
-}
-
-.offline{
-    color:#ef4444;
-}
-
-button{
-    margin-top:20px;
-    padding:12px 28px;
-    border:none;
-    border-radius:12px;
-    cursor:pointer;
-    background:#22c55e;
-    color:white;
-    font-size:16px;
-    transition:.2s;
-}
-
-button:hover{
-    transform:scale(1.05);
-}
-
-.footer{
-    margin-top:20px;
-    color:#64748b;
-    font-size:14px;
-}
+@keyframes down{from{opacity:0;transform:translateY(-25px)}to{opacity:1;transform:translateY(0)}}
+@keyframes left{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes right{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes up{from{opacity:0;transform:translateY(35px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){.left h1{font-size:42px}nav{padding:20px}.hero{padding:25px}.card{width:100%}}
 </style>
-
 </head>
+
 <body>
+<div class="bg"></div>
 
-<div class="card">
+<nav>
+  <div class="logo">PressLore</div>
+  <div>
+    <a href="#server">Сервер</a>
+   <a class="btn dark" href="/forum/">Форум</a>
+  </div>
+</nav>
 
-```
-<div class="logo">⚔️</div>
+<section class="hero">
+  <div class="left">
+    <h1>Лучший сервер<br><span>по выживанию</span></h1>
+    <p>PressLore.eu — уютный Minecraft сервер с красивым выживанием, честной игрой и дружным комьюнити.</p>
+    <div class="buttons">
+      <a class="btn" href="#server">Начать играть</a>
+     <a class="btn dark" href="/forum/">Форум</a>
+    </div>
+  </div>
 
-<div class="title">PressLore</div>
-<div class="subtitle">Good of Europe</div>
+  <div class="card" id="server">
+    <div class="sword">⚔️</div>
+    <div class="server-title">PressLore</div>
+    <div class="sub">Good of Europe</div>
 
-<div class="box">
-    <div class="label">IP сервера</div>
-    <div class="value" id="ip">Загрузка...</div>
-</div>
+    <div class="box">
+      <div class="label">IP сервера</div>
+      <div id="ip" class="value">mc.presslore.eu</div>
+    </div>
 
-<div class="box">
-    <div class="label">Статус</div>
-    <div class="value" id="status">Проверка...</div>
-</div>
+    <div class="box">
+      <div class="label">Статус</div>
+      <div id="status" class="value">Проверка...</div>
+    </div>
 
-<div class="box">
-    <div class="label">Онлайн игроков</div>
-    <div class="value" id="players">0/0</div>
-</div>
+    <div class="box">
+      <div class="label">Онлайн игроков</div>
+      <div id="players" class="value">0/0</div>
+    </div>
 
-<div class="box">
-    <div class="label">Версия</div>
-    <div class="value" id="version">...</div>
-</div>
+    <div class="box">
+      <div class="label">Версия</div>
+      <div id="version" class="value">...</div>
+    </div>
 
-<div class="box">
-    <div class="label">MOTD</div>
-    <div class="value" id="motd">...</div>
-</div>
+    <button class="copy" onclick="copyIP()">Скопировать IP</button>
+  </div>
+</section>
 
-<button onclick="copyIP()">
-    Скопировать IP
-</button>
-
-<div class="footer">
-    PressLore © 2026
-</div>
-```
-
-</div>
+<section class="features">
+  <div class="feature">
+    <h3>⚒ Выживание</h3>
+    <p>Классический survival с удобной атмосферой.</p>
+  </div>
+  <div class="feature">
+    <h3>🛡 Честная игра</h3>
+    <p>Проверки на читы и защита игроков.</p>
+  </div>
+  <div class="feature">
+    <h3>🌍 Комьюнити</h3>
+    <p>Играй с друзьями и развивайся на сервере.</p>
+  </div>
+</section>
 
 <script>
-
 const SERVER = "mc.presslore.eu";
 
 async function loadServer(){
+ try{
+  const response = await fetch(`https://api.mcsrvstat.us/3/${SERVER}`);
+  const data = await response.json();
 
-    try{
+  document.getElementById("ip").textContent = SERVER;
+  document.getElementById("players").textContent =
+    (data.players?.online || 0) + "/" + (data.players?.max || 0);
+  document.getElementById("version").textContent =
+    data.version || "Неизвестно";
 
-        const response =
-            await fetch(`https://api.mcsrvstat.us/3/${SERVER}`);
-
-        const data = await response.json();
-
-        document.getElementById("ip").textContent =
-            SERVER;
-
-        document.getElementById("players").textContent =
-            (data.players?.online || 0) +
-            "/" +
-            (data.players?.max || 0);
-
-        document.getElementById("version").textContent =
-            data.version || "Неизвестно";
-
-        document.getElementById("motd").textContent =
-            data.motd?.clean?.join(" ") || "Нет MOTD";
-
-        const status =
-            document.getElementById("status");
-
-        if(data.online){
-
-            status.textContent = "Онлайн";
-            status.className = "value online";
-
-        }else{
-
-            status.textContent = "Оффлайн";
-            status.className = "value offline";
-
-        }
-
-    }catch(e){
-
-        document.getElementById("status")
-            .textContent = "Ошибка";
-
-    }
+  const status = document.getElementById("status");
+  if(data.online){
+    status.textContent = "Онлайн";
+    status.className = "value online";
+  }else{
+    status.textContent = "Оффлайн";
+    status.className = "value offline";
+  }
+ }catch(e){
+  document.getElementById("status").textContent = "Ошибка";
+ }
 }
 
 function copyIP(){
-
-    navigator.clipboard.writeText(SERVER);
-
-    alert("IP скопирован!");
-
+ navigator.clipboard.writeText(SERVER);
+ alert("IP скопирован!");
 }
 
 loadServer();
-setInterval(loadServer,5000);
-
+setInterval(loadServer,10000);
 </script>
-
 </body>
 </html>
