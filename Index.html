@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PressLore</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#071426,#0f172a);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.card{
+    width:500px;
+    background:#1e293b;
+    border-radius:24px;
+    padding:35px;
+    text-align:center;
+    color:white;
+    box-shadow:0 0 40px rgba(34,197,94,.25);
+}
+
+.logo{
+    font-size:55px;
+    margin-bottom:10px;
+}
+
+.title{
+    font-size:38px;
+    color:#22c55e;
+    font-weight:bold;
+}
+
+.subtitle{
+    color:#94a3b8;
+    margin-bottom:25px;
+}
+
+.box{
+    background:#0f172a;
+    padding:15px;
+    border-radius:14px;
+    margin-top:12px;
+}
+
+.label{
+    color:#94a3b8;
+    margin-bottom:5px;
+}
+
+.value{
+    font-size:24px;
+    font-weight:bold;
+}
+
+.online{
+    color:#22c55e;
+}
+
+.offline{
+    color:#ef4444;
+}
+
+button{
+    margin-top:20px;
+    padding:12px 28px;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    background:#22c55e;
+    color:white;
+    font-size:16px;
+    transition:.2s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+.footer{
+    margin-top:20px;
+    color:#64748b;
+    font-size:14px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+```
+<div class="logo">⚔️</div>
+
+<div class="title">PressLore</div>
+<div class="subtitle">Good of Europe</div>
+
+<div class="box">
+    <div class="label">IP сервера</div>
+    <div class="value" id="ip">Загрузка...</div>
+</div>
+
+<div class="box">
+    <div class="label">Статус</div>
+    <div class="value" id="status">Проверка...</div>
+</div>
+
+<div class="box">
+    <div class="label">Онлайн игроков</div>
+    <div class="value" id="players">0/0</div>
+</div>
+
+<div class="box">
+    <div class="label">Версия</div>
+    <div class="value" id="version">...</div>
+</div>
+
+<div class="box">
+    <div class="label">MOTD</div>
+    <div class="value" id="motd">...</div>
+</div>
+
+<button onclick="copyIP()">
+    Скопировать IP
+</button>
+
+<div class="footer">
+    PressLore © 2026
+</div>
+```
+
+</div>
+
+<script>
+
+const SERVER = "mc.presslore.eu";
+
+async function loadServer(){
+
+    try{
+
+        const response =
+            await fetch(`https://api.mcsrvstat.us/3/${SERVER}`);
+
+        const data = await response.json();
+
+        document.getElementById("ip").textContent =
+            SERVER;
+
+        document.getElementById("players").textContent =
+            (data.players?.online || 0) +
+            "/" +
+            (data.players?.max || 0);
+
+        document.getElementById("version").textContent =
+            data.version || "Неизвестно";
+
+        document.getElementById("motd").textContent =
+            data.motd?.clean?.join(" ") || "Нет MOTD";
+
+        const status =
+            document.getElementById("status");
+
+        if(data.online){
+
+            status.textContent = "Онлайн";
+            status.className = "value online";
+
+        }else{
+
+            status.textContent = "Оффлайн";
+            status.className = "value offline";
+
+        }
+
+    }catch(e){
+
+        document.getElementById("status")
+            .textContent = "Ошибка";
+
+    }
+}
+
+function copyIP(){
+
+    navigator.clipboard.writeText(SERVER);
+
+    alert("IP скопирован!");
+
+}
+
+loadServer();
+setInterval(loadServer,5000);
+
+</script>
+
+</body>
+</html>
