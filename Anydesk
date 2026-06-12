@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Проверка на читы | Minecraft Server</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #003b12, #00b33c);
+      color: white;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    .box {
+      margin: 80px auto;
+      padding: 35px;
+      max-width: 750px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 2px solid #00ff66;
+      border-radius: 25px;
+      box-shadow: 0 0 30px #00ff66;
+      animation: appear 1.5s ease;
+    }
+
+    h1 {
+      font-size: 42px;
+      color: #00ff66;
+      animation: glow 2s infinite alternate;
+    }
+
+    p {
+      font-size: 20px;
+      line-height: 1.6;
+    }
+
+    .ban {
+      color: #ff5555;
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 25px;
+      padding: 15px 30px;
+      background: #00ff66;
+      color: #003b12;
+      text-decoration: none;
+      border-radius: 15px;
+      font-size: 20px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background: white;
+      transform: scale(1.1);
+      box-shadow: 0 0 25px #00ff66;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 10px #00ff66; }
+      to { text-shadow: 0 0 30px #00ff66; }
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .cube {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      background: #00ff66;
+      opacity: 0.3;
+      animation: fly 8s infinite linear;
+    }
+
+    @keyframes fly {
+      from {
+        transform: translateY(100vh) rotate(0deg);
+      }
+      to {
+        transform: translateY(-100px) rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cube" style="left:10%; animation-delay:0s;"></div>
+  <div class="cube" style="left:35%; animation-delay:2s;"></div>
+  <div class="cube" style="left:70%; animation-delay:4s;"></div>
+  <div class="cube" style="left:90%; animation-delay:1s;"></div>
+
+  <div class="box">
+    <h1>Проверка на читы</h1>
+
+    <p>
+      На нашем Minecraft сервере запрещены любые читы, X-Ray, автокликеры,
+      макросы, запрещённые модификации и программы, дающие преимущество над другими игроками.
+    </p>
+
+    <p>
+      Если администрация вызывает вас на проверку, вы обязаны выполнить требования модератора.
+      Отказ от проверки может считаться нарушением правил сервера.
+    </p>
+
+    <p class="ban">
+      При обнаружении читов — бан на 50 дней.
+    </p>
+
+    <p>
+      Для проверки может понадобиться программа AnyDesk.
+    </p>
+
+    <a class="btn" href="https://anydesk.com/en" target="_blank">
+      Скачать AnyDesk
+    </a>
+  </div>
+
+</body>
+</html>
