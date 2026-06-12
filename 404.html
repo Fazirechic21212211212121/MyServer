@@ -9,7 +9,7 @@
       padding: 0;
       height: 100%;
       overflow: hidden;
-      background: black;
+      background: radial-gradient(circle at center, #071126 0%, #000 75%);
       font-family: 'Segoe UI', sans-serif;
       color: white;
       display: flex;
@@ -25,15 +25,21 @@
     }
 
     .content {
-      z-index: 1;
+      z-index: 2;
       text-align: center;
       animation: fadeIn 3s ease;
+      padding: 30px;
+      border-radius: 25px;
+      background: rgba(0, 0, 0, 0.35);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.25);
     }
 
     .content h1 {
-      font-size: 6em;
-      margin-bottom: 0.2em;
-      letter-spacing: 3px;
+      font-size: 7em;
+      margin: 0;
+      letter-spacing: 5px;
+      text-shadow: 0 0 25px #0ff;
     }
 
     .content p {
@@ -46,21 +52,56 @@
       text-decoration: none;
       border-bottom: 1px dashed #0ff;
       transition: 0.3s;
+      font-size: 1.1em;
     }
 
     .content a:hover {
       color: #fff;
       border-bottom: 1px dashed #fff;
+      text-shadow: 0 0 15px #0ff;
+    }
+
+    .planet {
+      position: fixed;
+      right: 8%;
+      bottom: 10%;
+      width: 170px;
+      height: 170px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #ffd27d, #d66bff, #3d1b75);
+      box-shadow: 0 0 45px rgba(214, 107, 255, 0.7);
+      z-index: 1;
+      animation: floatPlanet 6s ease-in-out infinite;
+    }
+
+    .planet::before {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 45px;
+      border: 3px solid rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      top: 60px;
+      left: -38px;
+      transform: rotate(-18deg);
     }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
+    @keyframes floatPlanet {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-25px); }
+    }
   </style>
 </head>
 <body>
-  <canvas id="stars"></canvas>
+  <canvas id="space"></canvas>
+
+  <div class="planet"></div>
+
   <div class="content">
     <h1>404</h1>
     <p>Вы потерялись в космосе 🪐</p>
@@ -68,51 +109,219 @@
   </div>
 
   <script>
-    const canvas = document.getElementById('stars');
+    const canvas = document.getElementById('space');
     const ctx = canvas.getContext('2d');
+
     let stars = [];
+    let rockets = [];
+    let comets = [];
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      createStars(250);
+    });
+
     resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
 
     function createStars(count) {
       stars = [];
+
       for (let i = 0; i < count; i++) {
         stars.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          r: Math.random() * 1.5 + 0.5,
-          d: Math.random() * 0.5 + 0.05
+          r: Math.random() * 1.8 + 0.3,
+          speed: Math.random() * 0.5 + 0.1,
+          alpha: Math.random(),
+          blink: Math.random() * 0.03 + 0.005
         });
       }
     }
 
+    function createRocket() {
+      rockets.push({
+        x: -100,
+        y: Math.random() * canvas.height * 0.75 + 50,
+        speed: Math.random() * 2.5 + 2,
+        size: Math.random() * 0.5 + 0.7,
+        flame: Math.random() * 10
+      });
+    }
+
+    function createComet() {
+      comets.push({
+        x: Math.random() * canvas.width,
+        y: -50,
+        speedX: Math.random() * 3 + 2,
+        speedY: Math.random() * 2 + 1,
+        length: Math.random() * 80 + 60
+      });
+    }
+
     function drawStars() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = 'white';
-      for (let i = 0; i < stars.length; i++) {
-        const s = stars[i];
+      for (let star of stars) {
+        star.alpha += star.blink;
+
+        if (star.alpha >= 1 || star.alpha <= 0.2) {
+          star.blink *= -1;
+        }
+
+        ctx.globalAlpha = star.alpha;
+        ctx.fillStyle = "white";
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
         ctx.fill();
-        s.y += s.d;
-        if (s.y > canvas.height) {
-          s.y = 0;
-          s.x = Math.random() * canvas.width;
+
+        star.y += star.speed;
+
+        if (star.y > canvas.height) {
+          star.y = 0;
+          star.x = Math.random() * canvas.width;
+        }
+      }
+
+      ctx.globalAlpha = 1;
+    }
+
+    function drawRocket(rocket) {
+      ctx.save();
+
+      ctx.translate(rocket.x, rocket.y);
+      ctx.scale(rocket.size, rocket.size);
+
+      // Огонь
+      ctx.fillStyle = "orange";
+      ctx.beginPath();
+      ctx.moveTo(-35, 0);
+      ctx.lineTo(-70 - Math.random() * 15, -14);
+      ctx.lineTo(-70 - Math.random() * 15, 14);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.fillStyle = "yellow";
+      ctx.beginPath();
+      ctx.moveTo(-35, 0);
+      ctx.lineTo(-58 - Math.random() * 10, -7);
+      ctx.lineTo(-58 - Math.random() * 10, 7);
+      ctx.closePath();
+      ctx.fill();
+
+      // Корпус ракеты
+      ctx.fillStyle = "#ddd";
+      ctx.beginPath();
+      ctx.moveTo(45, 0);
+      ctx.lineTo(15, -20);
+      ctx.lineTo(-35, -15);
+      ctx.lineTo(-35, 15);
+      ctx.lineTo(15, 20);
+      ctx.closePath();
+      ctx.fill();
+
+      // Нос ракеты
+      ctx.fillStyle = "#ff4d4d";
+      ctx.beginPath();
+      ctx.moveTo(45, 0);
+      ctx.lineTo(15, -20);
+      ctx.lineTo(15, 20);
+      ctx.closePath();
+      ctx.fill();
+
+      // Окно
+      ctx.fillStyle = "#00eaff";
+      ctx.beginPath();
+      ctx.arc(5, 0, 8, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Крылья
+      ctx.fillStyle = "#ff4d4d";
+      ctx.beginPath();
+      ctx.moveTo(-20, -15);
+      ctx.lineTo(-40, -35);
+      ctx.lineTo(-28, -8);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(-20, 15);
+      ctx.lineTo(-40, 35);
+      ctx.lineTo(-28, 8);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    function drawRockets() {
+      for (let i = rockets.length - 1; i >= 0; i--) {
+        const rocket = rockets[i];
+
+        drawRocket(rocket);
+        rocket.x += rocket.speed;
+
+        if (rocket.x > canvas.width + 150) {
+          rockets.splice(i, 1);
+        }
+      }
+    }
+
+    function drawComets() {
+      for (let i = comets.length - 1; i >= 0; i--) {
+        const comet = comets[i];
+
+        const gradient = ctx.createLinearGradient(
+          comet.x,
+          comet.y,
+          comet.x - comet.length,
+          comet.y - comet.length
+        );
+
+        gradient.addColorStop(0, "rgba(255,255,255,1)");
+        gradient.addColorStop(1, "rgba(0,255,255,0)");
+
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(comet.x, comet.y);
+        ctx.lineTo(comet.x - comet.length, comet.y - comet.length);
+        ctx.stroke();
+
+        ctx.fillStyle = "white";
+        ctx.beginPath();
+        ctx.arc(comet.x, comet.y, 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        comet.x += comet.speedX;
+        comet.y += comet.speedY;
+
+        if (comet.x > canvas.width + 100 || comet.y > canvas.height + 100) {
+          comets.splice(i, 1);
         }
       }
     }
 
     function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       drawStars();
+      drawComets();
+      drawRockets();
+
       requestAnimationFrame(animate);
     }
 
-    createStars(200);
+    createStars(250);
+
+    setInterval(createRocket, 2500);
+    setInterval(createComet, 3500);
+
+    createRocket();
+    createComet();
+
     animate();
   </script>
 </body>
