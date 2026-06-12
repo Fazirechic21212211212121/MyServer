@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Правила сервера</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(0,255,120,0.18), transparent 35%),
+    linear-gradient(135deg, #020403, #07120c 45%, #000);
+  color: #eafff1;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,255,120,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,120,0.04) 1px, transparent 1px);
+  background-size: 45px 45px;
+  animation: gridMove 18s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes gridMove {
+  from { background-position: 0 0; }
+  to { background-position: 45px 45px; }
+}
+
+header {
+  padding: 90px 20px 60px;
+  text-align: center;
+  position: relative;
+}
+
+.badge {
+  display: inline-block;
+  padding: 8px 18px;
+  border: 1px solid rgba(0,255,120,0.5);
+  border-radius: 999px;
+  color: #78ffb0;
+  background: rgba(0,255,120,0.08);
+  margin-bottom: 25px;
+  letter-spacing: 2px;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: clamp(38px, 7vw, 76px);
+  letter-spacing: 3px;
+  color: #ffffff;
+  text-shadow: 0 0 25px rgba(0,255,120,0.45);
+  animation: fadeDown 1s ease forwards;
+}
+
+header p {
+  max-width: 700px;
+  margin: 25px auto 0;
+  color: #a8c7b5;
+  font-size: 18px;
+  line-height: 1.7;
+  animation: fadeUp 1.2s ease forwards;
+}
+
+.container {
+  width: min(1100px, 92%);
+  margin: 0 auto 70px;
+  display: grid;
+  gap: 22px;
+}
+
+.rule {
+  position: relative;
+  overflow: hidden;
+  padding: 26px;
+  border-radius: 18px;
+  background: rgba(5, 20, 12, 0.72);
+  border: 1px solid rgba(0,255,120,0.18);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  backdrop-filter: blur(14px);
+  transform: translateY(25px);
+  opacity: 0;
+  animation: cardIn 0.8s ease forwards;
+}
+
+.rule:nth-child(1) { animation-delay: .1s; }
+.rule:nth-child(2) { animation-delay: .2s; }
+.rule:nth-child(3) { animation-delay: .3s; }
+.rule:nth-child(4) { animation-delay: .4s; }
+.rule:nth-child(5) { animation-delay: .5s; }
+.rule:nth-child(6) { animation-delay: .6s; }
+.rule:nth-child(7) { animation-delay: .7s; }
+.rule:nth-child(8) { animation-delay: .8s; }
+.rule:nth-child(9) { animation-delay: .9s; }
+
+.rule::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 5px;
+  background: linear-gradient(#00ff88, #007a43);
+}
+
+.rule::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(0,255,120,0.12),
+    transparent
+  );
+  transition: .7s;
+}
+
+.rule:hover::after {
+  left: 120%;
+}
+
+.rule:hover {
+  border-color: rgba(0,255,120,0.45);
+  transform: translateY(-4px);
+  box-shadow: 0 25px 80px rgba(0,255,120,0.12);
+}
+
+.rule h2 {
+  color: #78ffb0;
+  margin-bottom: 12px;
+  font-size: 23px;
+  letter-spacing: 1px;
+}
+
+.rule p {
+  color: #d7ffe5;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+.status {
+  border-color: rgba(0,255,120,0.4);
+  background: linear-gradient(135deg, rgba(0,255,120,0.13), rgba(5,20,12,0.78));
+}
+
+.penalty {
+  border-color: rgba(255,210,80,0.35);
+}
+
+.penalty h2 {
+  color: #ffe082;
+}
+
+footer {
+  text-align: center;
+  color: #7f9c8b;
+  padding: 30px;
+  border-top: 1px solid rgba(0,255,120,0.12);
+  background: rgba(0,0,0,0.35);
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(25px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cardIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  header {
+    padding-top: 60px;
+  }
+
+  .rule {
+    padding: 22px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="badge">GRIEF SERVER CODEX</div>
+  <h1>Правила сервера</h1>
+  <p>
+    Этот сервер создан для жёсткой, честной и конкурентной игры.
+    Гриферство разрешено, но использование читов, багов и вред серверу запрещены.
+  </p>
+</header>
+
+<main class="container">
+
+  <section class="rule status">
+    <h2>01. Разрешённый игровой процесс</h2>
+    <p>
+      Разрешены рейды, PvP, ловушки, разрушение баз, кража ресурсов и войны между игроками.
+      Это часть концепции гриферского сервера.
+    </p>
+  </section>
+
+  <section class="rule">
+    <h2>02. Запрет читов и стороннего ПО</h2>
+    <p>
+      Запрещены X-Ray, KillAura, Fly, SpeedHack, AutoTotem, FreeCam, Baritone и любые модификации,
+      дающие нечестное преимущество.
+    </p>
+  </section>
+
+  <section class="rule">
+    <h2>03. Запрет дюпов и эксплуатации багов</h2>
+    <p>
+      Нельзя использовать ошибки Minecraft, плагинов или сервера для размножения предметов,
+      обхода ограничений или получения преимущества.
+    </p>
+  </section>
+
+  <section class="rule">
+    <h2>04. Запрет вреда серверу</h2>
+    <p>
+      Запрещены лаг-машины, краш-механизмы, перегрузка чанков, намеренное снижение TPS
+      и любые действия, мешающие стабильной работе сервера.
+    </p>
+  </section>
+
+  <section class="rule">
+    <h2>05. Общение в чате</h2>
+    <p>
+      Запрещены спам, флуд, реклама сторонних проектов, угрозы, слив личной информации
+      и выдача себя за администрацию.
+    </p>
+  </section>
+
+  <section class="rule">
+    <h2>06. Донат и сделки</h2>
+    <p>
+      Запрещён обман игроков на реальные деньги, продажа чужих аккаунтов, фейковые услуги
+      и любые мошеннические схемы.
+    </p>
+  </section>
+
+  <section class="rule">
+    <h2>07. Обход наказаний</h2>
+    <p>
+      Запрещён вход с других аккаунтов после бана или мута. Обход наказания приводит
+      к ужесточению санкций.
+    </p>
+  </section>
+
+  <section class="rule penalty">
+    <h2>08. Наказания</h2>
+    <p>
+      За нарушение правил администрация может выдать предупреждение, мут, кик,
+      временный бан, перманентный бан или полную блокировку доступа к проекту.
+    </p>
+  </section>
+
+  <section class="rule status">
+    <h2>09. Финальное положение</h2>
+    <p>
+      Незнание правил не освобождает от ответственности. Администрация имеет право
+      изменять правила для защиты сервера и игроков.
+    </p>
+  </section>
+
+</main>
+
+<footer>
+  © 2026 Grief Server. Все права защищены.
+</footer>
+
+</body>
+</html>
