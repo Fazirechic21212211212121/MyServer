@@ -1,299 +1,338 @@
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/png" href="favicon.png">
-<title>Правила сервера</title>
+<title>Официальные правила сервера</title>
 
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+scroll-behavior:smooth;
 }
 
-body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  background:
-    radial-gradient(circle at top, rgba(0,255,120,0.18), transparent 35%),
-    linear-gradient(135deg, #020403, #07120c 45%, #000);
-  color: #eafff1;
-  min-height: 100vh;
-  overflow-x: hidden;
+body{
+font-family:'Inter',sans-serif;
+background:#050505;
+color:#e5e5e5;
+display:flex;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(0,255,120,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,120,0.04) 1px, transparent 1px);
-  background-size: 45px 45px;
-  animation: gridMove 18s linear infinite;
-  pointer-events: none;
+::-webkit-scrollbar{
+width:8px;
 }
 
-@keyframes gridMove {
-  from { background-position: 0 0; }
-  to { background-position: 45px 45px; }
+::-webkit-scrollbar-thumb{
+background:#00ff88;
+border-radius:20px;
 }
 
-header {
-  padding: 90px 20px 60px;
-  text-align: center;
-  position: relative;
+.sidebar{
+position:fixed;
+left:0;
+top:0;
+width:280px;
+height:100vh;
+background:#0b0b0b;
+border-right:1px solid rgba(0,255,136,.15);
+padding:30px;
+overflow:auto;
 }
 
-.badge {
-  display: inline-block;
-  padding: 8px 18px;
-  border: 1px solid rgba(0,255,120,0.5);
-  border-radius: 999px;
-  color: #78ffb0;
-  background: rgba(0,255,120,0.08);
-  margin-bottom: 25px;
-  letter-spacing: 2px;
-  font-size: 13px;
-  text-transform: uppercase;
+.logo{
+font-size:26px;
+font-weight:700;
+color:#00ff88;
+margin-bottom:35px;
 }
 
-h1 {
-  font-size: clamp(38px, 7vw, 76px);
-  letter-spacing: 3px;
-  color: #ffffff;
-  text-shadow: 0 0 25px rgba(0,255,120,0.45);
-  animation: fadeDown 1s ease forwards;
+.sidebar a{
+display:block;
+padding:12px 15px;
+margin-bottom:8px;
+text-decoration:none;
+color:#cfcfcf;
+border-radius:8px;
+transition:.25s;
 }
 
-header p {
-  max-width: 700px;
-  margin: 25px auto 0;
-  color: #a8c7b5;
-  font-size: 18px;
-  line-height: 1.7;
-  animation: fadeUp 1.2s ease forwards;
+.sidebar a:hover{
+background:#00ff88;
+color:#000;
+transform:translateX(5px);
 }
 
-.container {
-  width: min(1100px, 92%);
-  margin: 0 auto 70px;
-  display: grid;
-  gap: 22px;
+.content{
+margin-left:280px;
+padding:60px;
+max-width:1200px;
 }
 
-.rule {
-  position: relative;
-  overflow: hidden;
-  padding: 26px;
-  border-radius: 18px;
-  background: rgba(5, 20, 12, 0.72);
-  border: 1px solid rgba(0,255,120,0.18);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.35);
-  backdrop-filter: blur(14px);
-  transform: translateY(25px);
-  opacity: 0;
-  animation: cardIn 0.8s ease forwards;
+.hero{
+margin-bottom:50px;
 }
 
-.rule:nth-child(1) { animation-delay: .1s; }
-.rule:nth-child(2) { animation-delay: .2s; }
-.rule:nth-child(3) { animation-delay: .3s; }
-.rule:nth-child(4) { animation-delay: .4s; }
-.rule:nth-child(5) { animation-delay: .5s; }
-.rule:nth-child(6) { animation-delay: .6s; }
-.rule:nth-child(7) { animation-delay: .7s; }
-.rule:nth-child(8) { animation-delay: .8s; }
-.rule:nth-child(9) { animation-delay: .9s; }
-
-.rule::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  width: 5px;
-  background: linear-gradient(#00ff88, #007a43);
+.hero h1{
+font-size:55px;
+color:white;
+margin-bottom:15px;
 }
 
-.rule::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -120%;
-  width: 80%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(0,255,120,0.12),
-    transparent
-  );
-  transition: .7s;
+.hero p{
+color:#9a9a9a;
+font-size:18px;
+line-height:1.8;
 }
 
-.rule:hover::after {
-  left: 120%;
+.section{
+margin-bottom:70px;
+animation:fade 1s ease;
 }
 
-.rule:hover {
-  border-color: rgba(0,255,120,0.45);
-  transform: translateY(-4px);
-  box-shadow: 0 25px 80px rgba(0,255,120,0.12);
+.section h2{
+font-size:34px;
+margin-bottom:25px;
+color:#00ff88;
+padding-bottom:10px;
+border-bottom:1px solid rgba(0,255,136,.2);
 }
 
-.rule h2 {
-  color: #78ffb0;
-  margin-bottom: 12px;
-  font-size: 23px;
-  letter-spacing: 1px;
+.rules{
+line-height:2.1;
+font-size:17px;
 }
 
-.rule p {
-  color: #d7ffe5;
-  line-height: 1.7;
-  font-size: 16px;
+.rules p{
+padding:2px 0;
+transition:.2s;
 }
 
-.status {
-  border-color: rgba(0,255,120,0.4);
-  background: linear-gradient(135deg, rgba(0,255,120,0.13), rgba(5,20,12,0.78));
+.rules p:hover{
+color:#00ff88;
+padding-left:10px;
 }
 
-.penalty {
-  border-color: rgba(255,210,80,0.35);
+.footer{
+margin-top:100px;
+padding-top:30px;
+border-top:1px solid rgba(255,255,255,.08);
+color:#7a7a7a;
 }
 
-.penalty h2 {
-  color: #ffe082;
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(30px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
-footer {
-  text-align: center;
-  color: #7f9c8b;
-  padding: 30px;
-  border-top: 1px solid rgba(0,255,120,0.12);
-  background: rgba(0,0,0,0.35);
+@media(max-width:900px){
+
+.sidebar{
+display:none;
 }
 
-@keyframes fadeDown {
-  from { opacity: 0; transform: translateY(-25px); }
-  to { opacity: 1; transform: translateY(0); }
+.content{
+margin-left:0;
+padding:30px;
 }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(25px); }
-  to { opacity: 1; transform: translateY(0); }
+.hero h1{
+font-size:38px;
 }
 
-@keyframes cardIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 600px) {
-  header {
-    padding-top: 60px;
-  }
-
-  .rule {
-    padding: 22px;
-  }
 }
 </style>
 </head>
 
 <body>
 
-<header>
-  <div class="badge">GRIEF SERVER CODEX</div>
-  <h1>Правила сервера</h1>
-  <p>
-    Этот сервер создан для жёсткой, честной и конкурентной игры.
-    Гриферство разрешено, но использование читов, багов и вред серверу запрещены.
-  </p>
-</header>
+<nav class="sidebar">
+<div class="logo">GRIEF SERVER</div>
 
-<main class="container">
+<a href="#general">1. Общие положения</a>
+<a href="#game">2. Игровой процесс</a>
+<a href="#cheats">3. Читы и модификации</a>
+<a href="#economy">4. Экономика</a>
+<a href="#chat">5. Чат</a>
+<a href="#server">6. Сервер и производительность</a>
+<a href="#admin">7. Администрация</a>
+<a href="#punish">8. Наказания</a>
+</nav>
 
-  <section class="rule status">
-    <h2>01. Разрешённый игровой процесс</h2>
-    <p>
-      Разрешены рейды, PvP, ловушки, разрушение баз, кража ресурсов и войны между игроками.
-      Это часть концепции гриферского сервера.
-    </p>
-  </section>
+<main class="content">
 
-  <section class="rule">
-    <h2>02. Запрет читов и стороннего ПО</h2>
-    <p>
-      Запрещены X-Ray, KillAura, Fly, SpeedHack, AutoTotem, FreeCam, Baritone и любые модификации,
-      дающие нечестное преимущество.
-    </p>
-  </section>
+<div class="hero">
+<h1>Официальные правила сервера</h1>
+<p>
+Настоящий регламент обязателен для исполнения всеми игроками проекта.
+Нарушение любого пункта правил может привести к ограничению доступа к серверу.
+</p>
+</div>
 
-  <section class="rule">
-    <h2>03. Запрет дюпов и эксплуатации багов</h2>
-    <p>
-      Нельзя использовать ошибки Minecraft, плагинов или сервера для размножения предметов,
-      обхода ограничений или получения преимущества.
-    </p>
-  </section>
+<section class="section" id="general">
+<h2>1. Общие положения</h2>
+<div class="rules">
+<p>1.1 Незнание правил не освобождает от ответственности.</p>
+<p>1.2 Администрация вправе изменять правила без предварительного уведомления.</p>
+<p>1.3 Играя на сервере, игрок автоматически соглашается со всеми правилами проекта.</p>
+<p>1.4 Решение Главной администрации является окончательным.</p>
+<p>1.5 Запрещено использовать уязвимости сервера.</p>
+<p>1.6 Запрещено выдавать себя за администрацию.</p>
+<p>1.7 Запрещено распространять ложную информацию о проекте.</p>
+<p>1.8 Запрещено мешать работе администрации.</p>
+<p>1.9 Запрещено создавать помехи работе сервера.</p>
+<p>1.10 Игрок обязан самостоятельно следить за обновлениями правил.</p>
+</div>
+</section>
 
-  <section class="rule">
-    <h2>04. Запрет вреда серверу</h2>
-    <p>
-      Запрещены лаг-машины, краш-механизмы, перегрузка чанков, намеренное снижение TPS
-      и любые действия, мешающие стабильной работе сервера.
-    </p>
-  </section>
+<section class="section" id="game">
+<h2>2. Игровой процесс</h2>
+<div class="rules">
+<p>2.1 Гриферство разрешено.</p>
+<p>2.2 Рейды разрешены.</p>
+<p>2.3 PvP разрешено.</p>
+<p>2.4 Ловушки разрешены.</p>
+<p>2.5 Засады разрешены.</p>
+<p>2.6 Воровство ресурсов разрешено.</p>
+<p>2.7 Разрушение построек разрешено.</p>
+<p>2.8 Использование TNT разрешено.</p>
+<p>2.9 Использование лавы разрешено.</p>
+<p>2.10 Использование воды разрешено.</p>
+<p>2.11 Использование поршней разрешено.</p>
+<p>2.12 Убийство игроков разрешено.</p>
+<p>2.13 Убийство животных разрешено.</p>
+<p>2.14 Захват территорий разрешён.</p>
+<p>2.15 Создание военных баз разрешено.</p>
+</div>
+</section>
 
-  <section class="rule">
-    <h2>05. Общение в чате</h2>
-    <p>
-      Запрещены спам, флуд, реклама сторонних проектов, угрозы, слив личной информации
-      и выдача себя за администрацию.
-    </p>
-  </section>
+<section class="section" id="cheats">
+<h2>3. Читы и модификации</h2>
+<div class="rules">
+<p>3.1 Запрещён X-Ray.</p>
+<p>3.2 Запрещён KillAura.</p>
+<p>3.3 Запрещён TriggerBot.</p>
+<p>3.4 Запрещён AutoClicker.</p>
+<p>3.5 Запрещён Fly.</p>
+<p>3.6 Запрещён SpeedHack.</p>
+<p>3.7 Запрещён FreeCam.</p>
+<p>3.8 Запрещён Reach.</p>
+<p>3.9 Запрещён NoFall.</p>
+<p>3.10 Запрещён AntiKnockback.</p>
+<p>3.11 Запрещён AutoTotem.</p>
+<p>3.12 Запрещён ChestESP.</p>
+<p>3.13 Запрещён EntityESP.</p>
+<p>3.14 Запрещён Tracers.</p>
+<p>3.15 Запрещён Baritone.</p>
+<p>3.16 Запрещён InventoryMove.</p>
+<p>3.17 Запрещён Jesus.</p>
+<p>3.18 Запрещён Scaffold.</p>
+<p>3.19 Запрещены макросы для PvP.</p>
+<p>3.20 Запрещены любые сторонние программы, дающие преимущество.</p>
+</div>
+</section>
 
-  <section class="rule">
-    <h2>06. Донат и сделки</h2>
-    <p>
-      Запрещён обман игроков на реальные деньги, продажа чужих аккаунтов, фейковые услуги
-      и любые мошеннические схемы.
-    </p>
-  </section>
+<section class="section" id="economy">
+<h2>4. Экономика</h2>
+<div class="rules">
+<p>4.1 Запрещены дюпы.</p>
+<p>4.2 Запрещено использование багов экономики.</p>
+<p>4.3 Запрещено создание предметов через ошибки сервера.</p>
+<p>4.4 Запрещена продажа дюпаных предметов.</p>
+<p>4.5 Запрещено сокрытие известных багов.</p>
+<p>4.6 Запрещено мошенничество за реальные деньги.</p>
+<p>4.7 Запрещена продажа аккаунтов.</p>
+<p>4.8 Запрещена покупка аккаунтов.</p>
+<p>4.9 Запрещена передача аккаунта третьим лицам.</p>
+<p>4.10 Запрещено выдавать чужие вещи за свои.</p>
+</div>
+</section>
 
-  <section class="rule">
-    <h2>07. Обход наказаний</h2>
-    <p>
-      Запрещён вход с других аккаунтов после бана или мута. Обход наказания приводит
-      к ужесточению санкций.
-    </p>
-  </section>
+<section class="section" id="chat">
+<h2>5. Чат</h2>
+<div class="rules">
+<p>5.1 Запрещён спам.</p>
+<p>5.2 Запрещён флуд.</p>
+<p>5.3 Запрещён капс.</p>
+<p>5.4 Запрещена реклама других серверов.</p>
+<p>5.5 Запрещена реклама сайтов.</p>
+<p>5.6 Запрещена реклама Discord-серверов.</p>
+<p>5.7 Запрещены угрозы.</p>
+<p>5.8 Запрещены оскорбления родственников.</p>
+<p>5.9 Запрещено распространение личных данных.</p>
+<p>5.10 Запрещены фейковые жалобы.</p>
+<p>5.11 Запрещено попрошайничество.</p>
+<p>5.12 Запрещено злоупотребление командами чата.</p>
+<p>5.13 Запрещены провокации.</p>
+<p>5.14 Запрещено разжигание конфликтов.</p>
+<p>5.15 Запрещён обход мута.</p>
+</div>
+</section>
 
-  <section class="rule penalty">
-    <h2>08. Наказания</h2>
-    <p>
-      За нарушение правил администрация может выдать предупреждение, мут, кик,
-      временный бан, перманентный бан или полную блокировку доступа к проекту.
-    </p>
-  </section>
+<section class="section" id="server">
+<h2>6. Сервер и производительность</h2>
+<div class="rules">
+<p>6.1 Запрещены лаг-машины.</p>
+<p>6.2 Запрещены краш-машины.</p>
+<p>6.3 Запрещены чрезмерно нагруженные фермы.</p>
+<p>6.4 Запрещено создание механизмов для обвала TPS.</p>
+<p>6.5 Запрещено использование ошибок генерации мира.</p>
+<p>6.6 Запрещено массовое спавнение сущностей.</p>
+<p>6.7 Запрещено использование автоматических лаг-ферм.</p>
+<p>6.8 Запрещено намеренно перегружать сервер.</p>
+<p>6.9 Запрещено использовать ботов.</p>
+<p>6.10 Запрещено создавать нагрузку на сеть проекта.</p>
+</div>
+</section>
 
-  <section class="rule status">
-    <h2>09. Финальное положение</h2>
-    <p>
-      Незнание правил не освобождает от ответственности. Администрация имеет право
-      изменять правила для защиты сервера и игроков.
-    </p>
-  </section>
+<section class="section" id="admin">
+<h2>7. Администрация</h2>
+<div class="rules">
+<p>7.1 Запрещено оскорблять администрацию.</p>
+<p>7.2 Запрещено мешать проверкам.</p>
+<p>7.3 Игрок обязан предоставить клиент на проверку.</p>
+<p>7.4 Отказ от проверки приравнивается к признанию нарушения.</p>
+<p>7.5 Запрещено удалять файлы во время проверки.</p>
+<p>7.6 Запрещено выходить во время проверки.</p>
+<p>7.7 Запрещено скрывать читы.</p>
+<p>7.8 Запрещено угрожать администрации.</p>
+<p>7.9 Запрещено публиковать личные данные администрации.</p>
+<p>7.10 Запрещено подделывать скриншоты.</p>
+</div>
+</section>
+
+<section class="section" id="punish">
+<h2>8. Наказания</h2>
+<div class="rules">
+<p>8.1 Предупреждение.</p>
+<p>8.2 Мут на 30 минут.</p>
+<p>8.3 Мут на 1 час.</p>
+<p>8.4 Мут на 1 день.</p>
+<p>8.5 Бан на 1 день.</p>
+<p>8.6 Бан на 3 дня.</p>
+<p>8.7 Бан на 7 дней.</p>
+<p>8.8 Бан на 30 дней.</p>
+<p>8.9 Перманентный бан.</p>
+<p>8.10 Полная блокировка проекта.</p>
+</div>
+</section>
+
+<div class="footer">
+© 2026 GRIEF SERVER. Все права защищены.
+</div>
 
 </main>
 
-<footer>
-  © 2026 Grief Server. Все права защищены.
-</footer>
-
 </body>
 </html>
+```
