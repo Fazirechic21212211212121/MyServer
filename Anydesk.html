@@ -1,133 +1,385 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Проверка на читы | Minecraft Server</title>
-  <link rel="icon" type="image/png" href="favicon.png">
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #003b12, #00b33c);
-      color: white;
-      text-align: center;
-      overflow-x: hidden;
-    }
+<link rel="icon" type="image/png" href="favicon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    .box {
-      margin: 80px auto;
-      padding: 35px;
-      max-width: 750px;
-      background: rgba(0, 0, 0, 0.45);
-      border: 2px solid #00ff66;
-      border-radius: 25px;
-      box-shadow: 0 0 30px #00ff66;
-      animation: appear 1.5s ease;
-    }
+<title>Проверка на читы</title>
 
-    h1 {
-      font-size: 42px;
-      color: #00ff66;
-      animation: glow 2s infinite alternate;
-    }
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
 
-    p {
-      font-size: 20px;
-      line-height: 1.6;
-    }
+body {
+  background: #020604;
+  color: #fff;
+  overflow-x: hidden;
+}
 
-    .ban {
-      color: #ff5555;
-      font-weight: bold;
-      font-size: 24px;
-    }
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(0,255,120,.18), transparent 28%),
+    radial-gradient(circle at 85% 30%, rgba(0,255,120,.12), transparent 25%),
+    radial-gradient(circle at 50% 90%, rgba(0,255,120,.16), transparent 30%);
+  animation: bgMove 9s infinite alternate ease-in-out;
+  z-index: -2;
+}
 
-    .btn {
-      display: inline-block;
-      margin-top: 25px;
-      padding: 15px 30px;
-      background: #00ff66;
-      color: #003b12;
-      text-decoration: none;
-      border-radius: 15px;
-      font-size: 20px;
-      font-weight: bold;
-      transition: 0.3s;
-    }
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,255,120,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,120,.04) 1px, transparent 1px);
+  background-size: 55px 55px;
+  z-index: -1;
+}
 
-    .btn:hover {
-      background: white;
-      transform: scale(1.1);
-      box-shadow: 0 0 25px #00ff66;
-    }
+@keyframes bgMove {
+  from { transform: scale(1); }
+  to { transform: scale(1.18); }
+}
 
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #00ff66; }
-      to { text-shadow: 0 0 30px #00ff66; }
-    }
+.hero {
+  width: 100vw;
+  height: 760px;
+  position: relative;
+  overflow: hidden;
+  animation: heroLoad 1.2s ease forwards;
+}
 
-    @keyframes appear {
-      from {
-        opacity: 0;
-        transform: translateY(50px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+.hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(.45) contrast(1.25) saturate(1.15);
+  animation: zoomIn 9s ease forwards;
+}
 
-    .cube {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      background: #00ff66;
-      opacity: 0.3;
-      animation: fly 8s infinite linear;
-    }
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,.15), #020604 98%),
+    linear-gradient(to right, rgba(0,0,0,.7), transparent 55%, rgba(0,0,0,.6));
+}
 
-    @keyframes fly {
-      from {
-        transform: translateY(100vh) rotate(0deg);
-      }
-      to {
-        transform: translateY(-100px) rotate(360deg);
-      }
-    }
-  </style>
+.hero-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 7%;
+}
+
+.badge {
+  width: max-content;
+  padding: 14px 28px;
+  border-radius: 999px;
+  background: rgba(0,255,136,.12);
+  border: 1px solid rgba(0,255,136,.45);
+  color: #00ff88;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+  box-shadow: 0 0 30px rgba(0,255,136,.25);
+  animation: showUp 1s .2s forwards;
+  opacity: 0;
+}
+
+h1 {
+  font-size: clamp(60px, 9vw, 145px);
+  line-height: .9;
+  max-width: 1100px;
+  color: #fff;
+  text-shadow:
+    0 0 25px rgba(0,255,136,.8),
+    0 0 80px rgba(0,255,136,.45);
+  animation: showUp 1s .4s forwards;
+  opacity: 0;
+}
+
+.hero-text {
+  margin-top: 30px;
+  max-width: 800px;
+  font-size: 26px;
+  line-height: 1.5;
+  color: #d9ffe9;
+  animation: showUp 1s .6s forwards;
+  opacity: 0;
+}
+
+.container {
+  width: min(1280px, 92%);
+  margin: -60px auto 90px;
+  position: relative;
+  z-index: 5;
+}
+
+.main-card {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(0,255,136,.25);
+  border-radius: 38px;
+  padding: 48px;
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 0 70px rgba(0,0,0,.55),
+    inset 0 0 45px rgba(0,255,136,.04);
+  animation: showUp 1s .8s forwards;
+  opacity: 0;
+}
+
+.main-card h2 {
+  font-size: 48px;
+  color: #00ff88;
+  margin-bottom: 22px;
+}
+
+.main-card p {
+  font-size: 23px;
+  line-height: 1.8;
+  color: #dcffec;
+  margin-bottom: 18px;
+}
+
+.warning {
+  margin: 35px 0;
+  padding: 30px;
+  border-radius: 28px;
+  background: rgba(255,60,60,.10);
+  border: 1px solid rgba(255,80,80,.35);
+  box-shadow: 0 0 35px rgba(255,0,0,.12);
+}
+
+.warning h3 {
+  font-size: 34px;
+  color: #ff5555;
+  margin-bottom: 15px;
+}
+
+.warning p {
+  font-size: 26px;
+  color: #fff;
+  font-weight: 800;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin: 38px 0;
+}
+
+.info-card {
+  background: linear-gradient(145deg, rgba(0,255,136,.13), rgba(255,255,255,.04));
+  border: 1px solid rgba(0,255,136,.22);
+  border-radius: 28px;
+  padding: 28px;
+  min-height: 170px;
+  transition: .35s;
+}
+
+.info-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 0 35px rgba(0,255,136,.28);
+}
+
+.info-card h3 {
+  font-size: 26px;
+  color: #00ff88;
+  margin-bottom: 12px;
+}
+
+.info-card p {
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.anydesk-box {
+  margin-top: 35px;
+  padding: 30px;
+  border-radius: 28px;
+  background: rgba(0,255,136,.08);
+  border: 1px solid rgba(0,255,136,.22);
+  text-align: center;
+}
+
+.anydesk-box h3 {
+  font-size: 32px;
+  color: #00ff88;
+  margin-bottom: 15px;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 18px 36px;
+  border-radius: 999px;
+  background: #00ff88;
+  color: #021006;
+  text-decoration: none;
+  font-size: 22px;
+  font-weight: 900;
+  transition: .35s;
+  box-shadow: 0 0 35px rgba(0,255,136,.35);
+}
+
+.btn:hover {
+  transform: translateY(-5px) scale(1.04);
+  box-shadow: 0 0 55px rgba(0,255,136,.65);
+  background: #fff;
+}
+
+.final-text {
+  margin-top: 35px;
+  font-size: 28px;
+  color: #00ff88;
+  font-weight: 800;
+  text-align: center;
+  text-shadow: 0 0 25px rgba(0,255,136,.45);
+}
+
+@keyframes showUp {
+  from {
+    opacity: 0;
+    transform: translateY(45px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroLoad {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    height: 620px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .main-card {
+    padding: 30px;
+  }
+
+  .main-card h2 {
+    font-size: 36px;
+  }
+
+  .main-card p {
+    font-size: 18px;
+  }
+
+  .warning p {
+    font-size: 21px;
+  }
+
+  .btn {
+    font-size: 18px;
+    padding: 15px 28px;
+  }
+}
+</style>
 </head>
+
 <body>
 
-  <div class="cube" style="left:10%; animation-delay:0s;"></div>
-  <div class="cube" style="left:35%; animation-delay:2s;"></div>
-  <div class="cube" style="left:70%; animation-delay:4s;"></div>
-  <div class="cube" style="left:90%; animation-delay:1s;"></div>
+<section class="hero">
+  <img src="image.png" alt="Проверка на читы">
 
-  <div class="box">
-    <h1>Проверка на читы</h1>
-
-    <p>
-      На нашем Minecraft сервере запрещены любые читы, X-Ray, автокликеры,
-      макросы, запрещённые модификации и программы, дающие преимущество над другими игроками.
-    </p>
-
-    <p>
-      Если администрация вызывает вас на проверку, вы обязаны выполнить требования модератора.
-      Отказ от проверки может считаться нарушением правил сервера.
-    </p>
-
-    <p class="ban">
-      При обнаружении читов — бан на 50 дней.
-    </p>
-
-    <p>
-      Для проверки может понадобиться программа AnyDesk.
-    </p>
-
-    <a class="btn" href="https://anydesk.com/en" target="_blank">
-      Скачать AnyDesk
-    </a>
+  <div class="hero-content">
+    <div class="badge">ПРАВИЛА СЕРВЕРА</div>
+    <h1>ПРОВЕРКА НА ЧИТЫ</h1>
+    <div class="hero-text">
+      Честная игра — главное правило нашего Minecraft сервера.
+      Администрация может вызвать игрока на проверку при подозрении на запрещённые программы.
+    </div>
   </div>
+</section>
+
+<main class="container">
+
+  <section class="main-card">
+    <h2>Требования проверки</h2>
+
+    <p>
+      Если модератор или администратор вызвал вас на проверку,
+      вы обязаны спокойно выполнить его требования и не выходить с сервера без разрешения.
+    </p>
+
+    <p>
+      Во время проверки запрещено закрывать программы, удалять файлы,
+      перезагружать компьютер, тянуть время или мешать администрации.
+    </p>
+
+    <p>
+      Проверка проводится только для защиты честных игроков и сохранения нормальной игры на сервере.
+    </p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>Не выходить</h3>
+        <p>Запрещено покидать сервер или Discord во время проверки без разрешения администрации.</p>
+      </div>
+
+      <div class="info-card">
+        <h3>Не удалять</h3>
+        <p>Нельзя удалять файлы, чистить историю, закрывать программы или менять настройки.</p>
+      </div>
+
+      <div class="info-card">
+        <h3>Сотрудничать</h3>
+        <p>Игрок должен выполнять просьбы проверяющего и отвечать на вопросы честно.</p>
+      </div>
+    </div>
+
+    <div class="warning">
+      <h3>Наказание</h3>
+      <p>При обнаружении читов игрок получает бан на 50 дней.</p>
+    </div>
+
+    <div class="anydesk-box">
+      <h3>Программа для проверки</h3>
+      <p>
+        Для проверки может понадобиться AnyDesk.
+        Нажмите кнопку ниже, чтобы перейти на официальный сайт.
+      </p>
+
+      <a class="btn" href="https://anydesk.com/en" target="_blank">
+        Перейти на AnyDesk
+      </a>
+    </div>
+
+    <div class="final-text">
+      Играйте честно — уважайте игроков и администрацию сервера!
+    </div>
+  </section>
+
+</main>
 
 </body>
 </html>
