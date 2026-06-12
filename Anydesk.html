@@ -1,359 +1,289 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<link rel="icon" type="image/png" href="favicon.png">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Проверка на читы | Minecraft Server</title>
 
-<title>Проверка на читы</title>
-
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:"Segoe UI",Arial,sans-serif;
-}
-
-body{
-    background:#020604;
-    color:white;
-    overflow-x:hidden;
-}
-
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:
-        radial-gradient(circle at 15% 20%, rgba(0,255,120,.18), transparent 28%),
-        radial-gradient(circle at 85% 30%, rgba(0,255,120,.12), transparent 25%),
-        radial-gradient(circle at 50% 90%, rgba(0,255,120,.16), transparent 30%);
-    animation:bgMove 9s infinite alternate ease-in-out;
-    z-index:-2;
-}
-
-body::after{
-    content:"";
-    position:fixed;
-    inset:0;
-    background-image:
-        linear-gradient(rgba(0,255,120,.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,255,120,.04) 1px, transparent 1px);
-    background-size:55px 55px;
-    z-index:-1;
-}
-
-@keyframes bgMove{
-    from{transform:scale(1);}
-    to{transform:scale(1.18);}
-}
-
-.hero{
-    min-height:500px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-    padding:50px;
-    position:relative;
-}
-
-.hero-content{
-    max-width:1000px;
-}
-
-.badge{
-    width:max-content;
-    margin:auto;
-    padding:14px 28px;
-    border-radius:999px;
-    background:rgba(0,255,136,.12);
-    border:1px solid rgba(0,255,136,.45);
-    color:#00ff88;
-    font-weight:800;
-    letter-spacing:2px;
-    box-shadow:0 0 30px rgba(0,255,136,.25);
-    animation:showUp 1s;
-}
-
-h1{
-    margin-top:25px;
-    font-size:clamp(60px,10vw,140px);
-    line-height:.9;
-    text-shadow:
-        0 0 25px rgba(0,255,136,.8),
-        0 0 80px rgba(0,255,136,.45);
-    animation:showUp 1s .2s forwards;
-    opacity:0;
-}
-
-.hero-text{
-    margin-top:30px;
-    font-size:26px;
-    color:#d9ffe9;
-    line-height:1.6;
-    animation:showUp 1s .4s forwards;
-    opacity:0;
-}
-
-.container{
-    width:min(1200px,92%);
-    margin:auto;
-    padding-bottom:80px;
-}
-
-.main-card{
-    background:rgba(255,255,255,.06);
-    border:1px solid rgba(0,255,136,.25);
-    border-radius:38px;
-    padding:50px;
-    backdrop-filter:blur(18px);
-    box-shadow:
-        0 0 70px rgba(0,0,0,.55),
-        inset 0 0 45px rgba(0,255,136,.04);
-    animation:showUp 1s .6s forwards;
-    opacity:0;
-}
-
-.main-card h2{
-    font-size:48px;
-    color:#00ff88;
-    margin-bottom:20px;
-}
-
-.main-card p{
-    font-size:22px;
-    line-height:1.8;
-    color:#dcffec;
-    margin-bottom:18px;
-}
-
-.info-grid{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:22px;
-    margin:40px 0;
-}
-
-.info-card{
-    background:linear-gradient(
-        145deg,
-        rgba(0,255,136,.13),
-        rgba(255,255,255,.04)
-    );
-    border:1px solid rgba(0,255,136,.22);
-    border-radius:28px;
-    padding:28px;
-    transition:.35s;
-}
-
-.info-card:hover{
-    transform:translateY(-8px);
-    box-shadow:0 0 35px rgba(0,255,136,.28);
-}
-
-.info-card h3{
-    color:#00ff88;
-    margin-bottom:12px;
-    font-size:26px;
-}
-
-.info-card p{
-    font-size:18px;
-    margin:0;
-}
-
-.warning{
-    margin-top:35px;
-    padding:35px;
-    border-radius:30px;
-    background:rgba(255,40,40,.08);
-    border:1px solid rgba(255,60,60,.25);
-    text-align:center;
-}
-
-.warning h3{
-    color:#ff5555;
-    font-size:38px;
-    margin-bottom:15px;
-}
-
-.warning span{
-    color:#ff4444;
-    font-weight:900;
-    text-shadow:0 0 20px rgba(255,0,0,.5);
-}
-
-.download{
-    margin-top:35px;
-    padding:35px;
-    border-radius:30px;
-    background:rgba(0,255,136,.08);
-    border:1px solid rgba(0,255,136,.22);
-    text-align:center;
-}
-
-.download h3{
-    color:#00ff88;
-    font-size:34px;
-    margin-bottom:15px;
-}
-
-.btn{
-    display:inline-block;
-    margin-top:20px;
-    padding:18px 35px;
-    border-radius:999px;
-    text-decoration:none;
-    color:#021006;
-    background:#00ff88;
-    font-size:22px;
-    font-weight:900;
-    transition:.35s;
-    box-shadow:0 0 30px rgba(0,255,136,.35);
-}
-
-.btn:hover{
-    transform:translateY(-5px);
-    background:white;
-    box-shadow:0 0 50px rgba(0,255,136,.7);
-}
-
-.final-text{
-    margin-top:35px;
-    text-align:center;
-    font-size:28px;
-    color:#00ff88;
-    font-weight:800;
-    text-shadow:0 0 25px rgba(0,255,136,.45);
-}
-
-@keyframes showUp{
-    from{
-        opacity:0;
-        transform:translateY(45px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-@media(max-width:900px){
-
-    .info-grid{
-        grid-template-columns:1fr;
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
-    .main-card{
-        padding:30px;
+    body {
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: white;
+      background:
+        radial-gradient(circle at top, rgba(0,255,120,0.25), transparent 35%),
+        linear-gradient(135deg, #021b0b, #064d1f, #00a83b);
+      overflow-x: hidden;
     }
 
-    h1{
-        font-size:65px;
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
     }
 
-    .hero-text{
-        font-size:20px;
+    .cube {
+      position: fixed;
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, #00ff66, #006b2b);
+      opacity: 0.25;
+      border: 2px solid #7cffaa;
+      animation: fly 12s infinite linear;
+      z-index: 0;
     }
 
-    .main-card p{
-        font-size:18px;
+    .cube:nth-child(1) { left: 8%; animation-delay: 0s; }
+    .cube:nth-child(2) { left: 28%; animation-delay: 3s; }
+    .cube:nth-child(3) { left: 55%; animation-delay: 6s; }
+    .cube:nth-child(4) { left: 80%; animation-delay: 1.5s; }
+    .cube:nth-child(5) { left: 93%; animation-delay: 4.5s; }
+
+    @keyframes fly {
+      from {
+        transform: translateY(110vh) rotate(0deg);
+      }
+      to {
+        transform: translateY(-120px) rotate(360deg);
+      }
     }
-}
-</style>
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      padding: 50px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .box {
+      width: 100%;
+      max-width: 950px;
+      padding: 45px;
+      background: rgba(0, 0, 0, 0.58);
+      border: 2px solid rgba(0, 255, 102, 0.8);
+      border-radius: 30px;
+      box-shadow:
+        0 0 35px rgba(0, 255, 102, 0.55),
+        inset 0 0 25px rgba(0, 255, 102, 0.08);
+      backdrop-filter: blur(12px);
+      animation: appear 1s ease;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 18px;
+      margin-bottom: 18px;
+      border-radius: 999px;
+      background: rgba(0, 255, 102, 0.15);
+      border: 1px solid #00ff66;
+      color: #9cffbe;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      color: #00ff66;
+      text-align: center;
+      margin-bottom: 15px;
+      text-shadow: 0 0 20px #00ff66;
+      animation: glow 2s infinite alternate;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 12px #00ff66; }
+      to { text-shadow: 0 0 35px #00ff66, 0 0 60px #00ff66; }
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 20px;
+      color: #d8ffe6;
+      margin-bottom: 35px;
+      line-height: 1.6;
+    }
+
+    .rules {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+      margin: 35px 0;
+    }
+
+    .card {
+      padding: 22px;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(0, 255, 102, 0.45);
+      border-radius: 20px;
+      transition: 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 25px rgba(0, 255, 102, 0.35);
+      border-color: #00ff66;
+    }
+
+    .card h2 {
+      color: #00ff66;
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      color: #e7ffee;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .warning {
+      margin-top: 25px;
+      padding: 25px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, rgba(255,0,0,0.25), rgba(80,0,0,0.45));
+      border: 1px solid #ff5555;
+      box-shadow: 0 0 25px rgba(255, 85, 85, 0.35);
+      text-align: center;
+    }
+
+    .warning strong {
+      display: block;
+      font-size: 28px;
+      color: #ff6969;
+      margin-bottom: 8px;
+    }
+
+    .actions {
+      text-align: center;
+      margin-top: 35px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 16px 34px;
+      background: linear-gradient(135deg, #00ff66, #8dffb5);
+      color: #002b10;
+      text-decoration: none;
+      border-radius: 16px;
+      font-size: 20px;
+      font-weight: bold;
+      transition: 0.3s;
+      box-shadow: 0 0 25px rgba(0,255,102,0.45);
+    }
+
+    .btn:hover {
+      transform: scale(1.08);
+      background: white;
+      box-shadow: 0 0 40px #00ff66;
+    }
+
+    .footer {
+      margin-top: 28px;
+      text-align: center;
+      color: #b8ffd0;
+      font-size: 14px;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 600px) {
+      .box {
+        padding: 28px 20px;
+      }
+
+      .subtitle {
+        font-size: 17px;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<section class="hero">
-    <div class="hero-content">
-        <div class="badge">ПРОВЕРКА ИГРОКОВ</div>
+  <div class="cube"></div>
+  <div class="cube"></div>
+  <div class="cube"></div>
+  <div class="cube"></div>
+  <div class="cube"></div>
 
-        <h1>ПРОВЕРКА НА ЧИТЫ</h1>
+  <main class="container">
+    <section class="box">
+      <div style="text-align:center;">
+        <span class="badge">MINECRAFT SERVER SECURITY</span>
+      </div>
 
-        <div class="hero-text">
-            Администрация сервера имеет право вызвать игрока
-            на проверку при подозрении на использование
-            запрещённых программ или модификаций.
+      <h1>Проверка на читы</h1>
+
+      <p class="subtitle">
+        На нашем сервере запрещены любые программы и модификации,
+        которые дают нечестное преимущество над другими игроками.
+      </p>
+
+      <div class="rules">
+        <div class="card">
+          <h2>🚫 Запрещено</h2>
+          <p>X-Ray, KillAura, Fly, SpeedHack, AutoClicker, макросы и запрещённые клиенты.</p>
         </div>
-    </div>
-</section>
 
-<main class="container">
+        <div class="card">
+          <h2>🛡 Проверка</h2>
+          <p>Если модератор вызывает вас на проверку, нужно выполнять его требования.</p>
+        </div>
 
-<section class="main-card">
+        <div class="card">
+          <h2>⚠ Отказ</h2>
+          <p>Отказ от проверки может считаться нарушением правил сервера.</p>
+        </div>
 
-<h2>Требования при проверке</h2>
+        <div class="card">
+          <h2>💻 AnyDesk</h2>
+          <p>Для проверки может понадобиться программа AnyDesk.</p>
+        </div>
+      </div>
 
-<p>
-Во время проверки запрещено выходить с сервера,
-закрывать программы, удалять файлы или препятствовать работе администрации.
-</p>
+      <div class="warning">
+        <strong>Бан на 50 дней</strong>
+        При обнаружении читов или запрещённых программ.
+      </div>
 
-<p>
-Игрок обязан выполнять указания проверяющего и предоставлять необходимую информацию.
-</p>
+      <div class="actions">
+        <a class="btn" href="https://anydesk.com/en" target="_blank">
+          Скачать AnyDesk
+        </a>
+      </div>
 
-<p>
-Проверка проводится для поддержания честной игры и безопасности сервера.
-</p>
-
-<div class="info-grid">
-
-<div class="info-card">
-<h3>Не выходить</h3>
-<p>
-Выход с сервера во время проверки может считаться отказом от проверки.
-</p>
-</div>
-
-<div class="info-card">
-<h3>Не удалять</h3>
-<p>
-Запрещено удалять файлы, очищать корзину или скрывать программы.
-</p>
-</div>
-
-<div class="info-card">
-<h3>Сотрудничать</h3>
-<p>
-Спокойно отвечайте на вопросы администрации и выполняйте требования проверки.
-</p>
-</div>
-
-</div>
-
-<div class="warning">
-<h3>⚠ Наказание</h3>
-<p>
-При обнаружении читов, X-Ray, автокликеров, макросов или другого запрещённого ПО —
-<span>БАН НА 50 ДНЕЙ</span>
-</p>
-</div>
-
-<div class="download">
-<h3>AnyDesk для проверки</h3>
-
-<p>
-Для проведения проверки администрация может попросить установить AnyDesk.
-</p>
-
-<a href="https://anydesk.com/en" class="btn" target="_blank">
-Перейти на сайт AnyDesk
-</a>
-</div>
-
-<div class="final-text">
-Играйте честно и уважайте других игроков сервера.
-</div>
-
-</section>
-
-</main>
+      <p class="footer">
+        Честная игра делает сервер лучше для всех игроков.
+      </p>
+    </section>
+  </main>
 
 </body>
 </html>
-```
