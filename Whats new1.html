@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+   <link rel="icon" type="image/png" href="favicon.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Что нового?</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+  background: #020604;
+  color: #fff;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(0,255,120,.18), transparent 28%),
+    radial-gradient(circle at 85% 30%, rgba(0,255,120,.12), transparent 25%),
+    radial-gradient(circle at 50% 90%, rgba(0,255,120,.16), transparent 30%);
+  animation: bgMove 9s infinite alternate ease-in-out;
+  z-index: -2;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,255,120,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,120,.04) 1px, transparent 1px);
+  background-size: 55px 55px;
+  z-index: -1;
+}
+
+@keyframes bgMove {
+  from { transform: scale(1); }
+  to { transform: scale(1.18); }
+}
+
+.hero {
+  width: 100vw;
+  height: 760px;
+  position: relative;
+  overflow: hidden;
+  animation: heroLoad 1.2s ease forwards;
+}
+
+.hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(.55) contrast(1.2) saturate(1.15);
+  animation: zoomIn 9s ease forwards;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,.15), #020604 98%),
+    linear-gradient(to right, rgba(0,0,0,.65), transparent 55%, rgba(0,0,0,.55));
+}
+
+.hero-content {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 7%;
+}
+
+.badge {
+  width: max-content;
+  padding: 14px 28px;
+  border-radius: 999px;
+  background: rgba(0,255,136,.12);
+  border: 1px solid rgba(0,255,136,.45);
+  color: #00ff88;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 25px;
+  box-shadow: 0 0 30px rgba(0,255,136,.25);
+  animation: showUp 1s .2s forwards;
+  opacity: 0;
+}
+
+h1 {
+  font-size: clamp(70px, 10vw, 155px);
+  line-height: .9;
+  max-width: 1000px;
+  color: #fff;
+  text-shadow:
+    0 0 25px rgba(0,255,136,.8),
+    0 0 80px rgba(0,255,136,.45);
+  animation: showUp 1s .4s forwards;
+  opacity: 0;
+}
+
+.hero-text {
+  margin-top: 30px;
+  max-width: 760px;
+  font-size: 26px;
+  line-height: 1.5;
+  color: #d9ffe9;
+  animation: showUp 1s .6s forwards;
+  opacity: 0;
+}
+
+.container {
+  width: min(1280px, 92%);
+  margin: -60px auto 90px;
+  position: relative;
+  z-index: 5;
+}
+
+.main-card {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(0,255,136,.25);
+  border-radius: 38px;
+  padding: 48px;
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 0 70px rgba(0,0,0,.55),
+    inset 0 0 45px rgba(0,255,136,.04);
+  animation: showUp 1s .8s forwards;
+  opacity: 0;
+}
+
+.main-card h2 {
+  font-size: 48px;
+  color: #00ff88;
+  margin-bottom: 22px;
+}
+
+.main-card p {
+  font-size: 23px;
+  line-height: 1.8;
+  color: #dcffec;
+  margin-bottom: 18px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin: 38px 0;
+}
+
+.info-card {
+  background: linear-gradient(145deg, rgba(0,255,136,.13), rgba(255,255,255,.04));
+  border: 1px solid rgba(0,255,136,.22);
+  border-radius: 28px;
+  padding: 28px;
+  min-height: 170px;
+  transition: .35s;
+}
+
+.info-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 0 35px rgba(0,255,136,.28);
+}
+
+.info-card h3 {
+  font-size: 26px;
+  color: #00ff88;
+  margin-bottom: 12px;
+}
+
+.info-card p {
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.types {
+  margin-top: 35px;
+  padding: 30px;
+  border-radius: 28px;
+  background: rgba(0,255,136,.08);
+  border: 1px solid rgba(0,255,136,.22);
+}
+
+.types h3 {
+  font-size: 32px;
+  color: #00ff88;
+  margin-bottom: 15px;
+}
+
+.types p {
+  font-size: 28px;
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.final-text {
+  margin-top: 35px;
+  font-size: 28px;
+  color: #00ff88;
+  font-weight: 800;
+  text-align: center;
+  text-shadow: 0 0 25px rgba(0,255,136,.45);
+}
+
+@keyframes showUp {
+  from {
+    opacity: 0;
+    transform: translateY(45px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroLoad {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+
+@media (max-width: 900px) {
+  .hero {
+    height: 620px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .main-card {
+    padding: 30px;
+  }
+
+  .main-card h2 {
+    font-size: 36px;
+  }
+
+  .main-card p {
+    font-size: 18px;
+  }
+
+  .types p {
+    font-size: 21px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<section class="hero">
+  <img src="image1.png" alt="Башни, монументы и ключ-карты">
+
+  <div class="hero-content">
+    <div class="badge">НОВОЕ ОБНОВЛЕНИЕ СЕРВЕРА</div>
+    <h1>КЛЮЧ-КАРТЫ</h1>
+    <div class="hero-text">
+      В мире появились башни, монументы и закрытые контейнеры
+      с ценным лутом. Найдите ключ-карту и заберите награду!
+    </div>
+  </div>
+</section>
+
+<main class="container">
+
+  <section class="main-card">
+    <h2>Башни, монументы и контейнеры</h2>
+
+    <p>
+      Теперь по миру разбросаны 25 башен и 100 монументов.
+      В башнях находятся специальные контейнеры с лутом,
+      но открыть их без ключ-карты не получится.
+    </p>
+
+    <p>
+      Ключ-карты бывают трёх уровней: синяя, зелёная и красная.
+      Чем выше уровень карты, тем ценнее контейнер и награда внутри.
+    </p>
+
+    <p>
+      Искать ключ-карты можно в монументах, на ивентах,
+      в квестах Джамшута, в заброшенных пещерах, данжах,
+      а иногда они могут выпадать даже из самих контейнеров.
+    </p>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <h3>25 башен</h3>
+        <p>В башнях спрятаны закрытые контейнеры с наградами и полезным лутом.</p>
+      </div>
+
+      <div class="info-card">
+        <h3>100 монументов</h3>
+        <p>Исследуйте монументы по всему миру — там можно найти ключ-карты.</p>
+      </div>
+
+      <div class="info-card">
+        <h3>3 уровня карт</h3>
+        <p>Синяя, зелёная и красная карты открывают контейнеры разной ценности.</p>
+      </div>
+    </div>
+
+    <div class="types">
+      <h3>Уровни ключ-карт</h3>
+      <p>Синяя — обычная • Зелёная — улучшенная • Красная — редкая</p>
+    </div>
+
+    <div class="final-text">
+      Исследуйте мир, ищите ключ-карты и открывайте самые ценные контейнеры!
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>
