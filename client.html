@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#18261d">
+  <meta name="description" content="Скачать официальный клиент Minecraft-сервера PressLore">
+  <title>PressLore — Скачать клиент</title>
+
+  <style>
+    :root {
+      --bg: #0c120e;
+      --bg-soft: #121b15;
+      --card: rgba(24, 38, 29, 0.82);
+      --card-2: rgba(31, 49, 36, 0.72);
+      --green: #7fa65a;
+      --green-light: #b7d58b;
+      --green-dark: #3f5d3b;
+      --moss: #536b3f;
+      --mud: #5d513c;
+      --text: #f0f4ec;
+      --muted: #aab8a7;
+      --border: rgba(183, 213, 139, 0.18);
+      --shadow: 0 25px 80px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 20%, rgba(90, 122, 67, 0.17), transparent 32%),
+        radial-gradient(circle at 85% 10%, rgba(78, 105, 58, 0.12), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(67, 86, 51, 0.18), transparent 40%),
+        linear-gradient(145deg, #0a100c 0%, #111a14 48%, #0b120d 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.18;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(to bottom, black, transparent 90%);
+    }
+
+    .glow {
+      position: fixed;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      filter: blur(110px);
+      opacity: 0.16;
+      pointer-events: none;
+      background: #87a85f;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+
+    .glow.one {
+      top: -160px;
+      left: -120px;
+    }
+
+    .glow.two {
+      right: -170px;
+      bottom: -180px;
+      animation-delay: -5s;
+    }
+
+    @keyframes drift {
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      to { transform: translate3d(55px, 25px, 0) scale(1.12); }
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+    }
+
+    .brand-logo {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background:
+        linear-gradient(145deg, rgba(139, 174, 99, 0.22), rgba(54, 78, 48, 0.18));
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      font-size: 22px;
+    }
+
+    .brand span {
+      color: var(--green-light);
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 13px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(18, 27, 21, 0.62);
+      color: var(--muted);
+      font-size: 13px;
+      backdrop-filter: blur(16px);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #8db66b;
+      box-shadow: 0 0 15px rgba(141, 182, 107, 0.85);
+    }
+
+    main {
+      padding: 58px 0 70px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(340px, 0.85fr);
+      gap: 42px;
+      align-items: center;
+      min-height: 610px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(79, 103, 62, 0.12);
+      color: var(--green-light);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(48px, 7vw, 86px);
+      line-height: 0.98;
+      letter-spacing: -3.5px;
+    }
+
+    h1 span {
+      display: block;
+      margin-top: 10px;
+      color: var(--green-light);
+      text-shadow: 0 0 40px rgba(151, 187, 108, 0.18);
+    }
+
+    .lead {
+      max-width: 650px;
+      margin: 26px 0 32px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .button {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 11px;
+      min-height: 58px;
+      padding: 0 25px;
+      overflow: hidden;
+      border-radius: 17px;
+      border: 1px solid transparent;
+      text-decoration: none;
+      font-weight: 800;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    }
+
+    .button:hover {
+      transform: translateY(-3px);
+    }
+
+    .button-primary {
+      color: #10170f;
+      background: linear-gradient(135deg, #b8d98b, #7fa65a);
+      box-shadow: 0 18px 42px rgba(100, 137, 72, 0.25);
+    }
+
+    .button-primary::after {
+      content: "";
+      position: absolute;
+      top: -80%;
+      left: -30%;
+      width: 38%;
+      height: 250%;
+      transform: rotate(24deg);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+      transition: left 0.7s ease;
+    }
+
+    .button-primary:hover::after {
+      left: 120%;
+    }
+
+    .button-secondary {
+      color: var(--text);
+      border-color: var(--border);
+      background: rgba(22, 34, 26, 0.7);
+      backdrop-filter: blur(14px);
+    }
+
+    .button-secondary:hover {
+      border-color: rgba(183, 213, 139, 0.38);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.22);
+    }
+
+    .small-note {
+      margin-top: 17px;
+      color: #869584;
+      font-size: 13px;
+    }
+
+    .launcher-card {
+      position: relative;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      background: linear-gradient(150deg, rgba(31, 47, 36, 0.88), rgba(13, 21, 16, 0.9));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(20px);
+      transform: rotate(1.4deg);
+      transition: transform 0.35s ease;
+    }
+
+    .launcher-card:hover {
+      transform: rotate(0deg) translateY(-4px);
+    }
+
+    .launcher-window {
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 22px;
+      background: #111912;
+    }
+
+    .window-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 17px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.025);
+    }
+
+    .window-dots {
+      display: flex;
+      gap: 7px;
+    }
+
+    .window-dots i {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #4a5f47;
+    }
+
+    .window-title {
+      color: #80907e;
+      font-size: 12px;
+    }
+
+    .preview {
+      position: relative;
+      min-height: 460px;
+      padding: 35px 28px 27px;
+      background:
+        radial-gradient(circle at 50% 10%, rgba(114, 148, 82, 0.18), transparent 37%),
+        linear-gradient(rgba(10, 16, 12, 0.25), rgba(10, 16, 12, 0.92)),
+        repeating-linear-gradient(
+          0deg,
+          rgba(255,255,255,0.017) 0,
+          rgba(255,255,255,0.017) 1px,
+          transparent 1px,
+          transparent 5px
+        );
+    }
+
+    .cube {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 118px;
+      height: 118px;
+      margin: 15px auto 25px;
+      border: 1px solid rgba(183, 213, 139, 0.22);
+      border-radius: 27px;
+      background:
+        linear-gradient(145deg, rgba(126, 161, 91, 0.32), rgba(44, 68, 43, 0.42));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.09),
+        0 25px 60px rgba(0,0,0,0.34);
+      font-size: 55px;
+      transform: rotate(-4deg);
+    }
+
+    .preview h2 {
+      text-align: center;
+      font-size: 30px;
+      letter-spacing: -1px;
+    }
+
+    .preview h2 span {
+      color: var(--green-light);
+    }
+
+    .preview p {
+      margin: 11px auto 25px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .server-data {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .server-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px 15px;
+      border: 1px solid rgba(255,255,255,0.055);
+      border-radius: 13px;
+      background: rgba(255,255,255,0.025);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .server-row strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .download-mini {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 50px;
+      margin-top: 18px;
+      border: 0;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #9fc875, #668b4f);
+      color: #10170f;
+      font-weight: 900;
+      text-decoration: none;
+      transition: filter .2s ease, transform .2s ease;
+    }
+
+    .download-mini:hover {
+      filter: brightness(1.08);
+      transform: translateY(-2px);
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .feature {
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--card);
+      backdrop-filter: blur(14px);
+    }
+
+    .feature-icon {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      margin-bottom: 16px;
+      border-radius: 13px;
+      background: rgba(131, 169, 94, 0.13);
+      font-size: 22px;
+    }
+
+    .feature h3 {
+      margin-bottom: 8px;
+      font-size: 17px;
+    }
+
+    .feature p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .steps {
+      margin-top: 22px;
+      padding: 27px;
+      border: 1px solid var(--border);
+      border-radius: 23px;
+      background: var(--card-2);
+      backdrop-filter: blur(16px);
+    }
+
+    .steps h2 {
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .step {
+      position: relative;
+      min-height: 120px;
+      padding: 19px;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 17px;
+      background: rgba(10, 16, 12, 0.25);
+    }
+
+    .step-number {
+      display: inline-grid;
+      place-items: center;
+      width: 31px;
+      height: 31px;
+      margin-bottom: 13px;
+      border-radius: 9px;
+      background: var(--green);
+      color: #10170f;
+      font-weight: 900;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 25px 0 36px;
+      color: #718070;
+      font-size: 13px;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding-top: 20px;
+      }
+
+      .hero-copy {
+        text-align: center;
+      }
+
+      .eyebrow {
+        margin-inline: auto;
+      }
+
+      .lead {
+        margin-inline: auto;
+      }
+
+      .actions {
+        justify-content: center;
+      }
+
+      .launcher-card {
+        max-width: 540px;
+        margin: 0 auto;
+        transform: none;
+      }
+
+      .features,
+      .steps-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        width: min(100% - 20px, 1180px);
+      }
+
+      header {
+        padding-top: 15px;
+      }
+
+      .status {
+        display: none;
+      }
+
+      main {
+        padding-top: 25px;
+      }
+
+      h1 {
+        font-size: clamp(44px, 15vw, 64px);
+        letter-spacing: -2.5px;
+      }
+
+      .lead {
+        font-size: 16px;
+      }
+
+      .actions {
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .preview {
+        min-height: 420px;
+        padding-inline: 18px;
+      }
+
+      .launcher-card {
+        padding: 10px;
+        border-radius: 23px;
+      }
+
+      .steps {
+        padding: 19px;
+      }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="glow one"></div>
+  <div class="glow two"></div>
+
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="brand-logo">🌿</div>
+        <div>PRESS<span>LORE</span></div>
+      </div>
+
+      <div class="status">
+        <span class="status-dot"></span>
+        Официальный клиент сервера
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-copy">
+          <div class="eyebrow">Minecraft Server Client</div>
+
+          <h1>
+            Твой путь в мир
+            <span>PressLore</span>
+          </h1>
+
+          <p class="lead">
+            Скачай официальный клиент сервера, запусти лаунчер и начни играть.
+            Всё необходимое для подключения уже собрано в одном установочном файле.
+          </p>
+
+          <div class="actions">
+            <a
+              class="button button-primary"
+              href="https://www.dropbox.com/scl/fi/qwfgazmp7rdnz9tq3rr2g/PressLoreLauncher.exe?rlkey=wioljht21d17b58nal6wyk4vx&st=z8co4m82&dl=1"
+              download
+            >
+              <span>⬇</span>
+              Скачать клиент
+            </a>
+
+            <a class="button button-secondary" href="#installation">
+              Как установить
+            </a>
+          </div>
+
+          <div class="small-note">
+            Поддерживается Windows 10 и Windows 11
+          </div>
+        </div>
+
+        <div class="launcher-card">
+          <div class="launcher-window">
+            <div class="window-bar">
+              <div class="window-dots">
+                <i></i><i></i><i></i>
+              </div>
+              <div class="window-title">PressLoreLauncher.exe</div>
+            </div>
+
+            <div class="preview">
+              <div class="cube">⛏️</div>
+
+              <h2>PressLore <span>Launcher</span></h2>
+
+              <p>
+                Официальный способ быстро подключиться к серверу и получать обновления клиента.
+              </p>
+
+              <div class="server-data">
+                <div class="server-row">
+                  <span>Файл</span>
+                  <strong>PressLoreLauncher.exe</strong>
+                </div>
+                <div class="server-row">
+                  <span>Платформа</span>
+                  <strong>Windows</strong>
+                </div>
+                <div class="server-row">
+                  <span>Источник</span>
+                  <strong>Официальная загрузка</strong>
+                </div>
+              </div>
+
+              <a
+                class="download-mini"
+                href="https://www.dropbox.com/scl/fi/qwfgazmp7rdnz9tq3rr2g/PressLoreLauncher.exe?rlkey=wioljht21d17b58nal6wyk4vx&st=z8co4m82&dl=1"
+                download
+              >
+                Начать загрузку
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="features">
+        <article class="feature">
+          <div class="feature-icon">⚡</div>
+          <h3>Быстрый запуск</h3>
+          <p>Скачай один файл, запусти лаунчер и переходи к игре без лишней настройки.</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon">🛡️</div>
+          <h3>Официальная версия</h3>
+          <p>Клиент загружается по официальной ссылке PressLore и предназначен для сервера.</p>
+        </article>
+
+        <article class="feature">
+          <div class="feature-icon">🔄</div>
+          <h3>Удобные обновления</h3>
+          <p>Лаунчер поможет использовать актуальную версию клиента для подключения.</p>
+        </article>
+      </section>
+
+      <section class="steps" id="installation">
+        <h2>Как установить клиент</h2>
+
+        <div class="steps-grid">
+          <div class="step">
+            <div class="step-number">1</div>
+            <p>Нажми кнопку «Скачать клиент» и дождись окончания загрузки.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">2</div>
+            <p>Открой файл PressLoreLauncher.exe из папки загрузок Windows.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">3</div>
+            <p>Следуй подсказкам лаунчера, дождись установки и запускай игру.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>© 2026 PressLore. Все права защищены.</div>
+      <div>Неофициальный продукт Minecraft. Не связан с Mojang Studios.</div>
+    </footer>
+  </div>
+</body>
+</html>
