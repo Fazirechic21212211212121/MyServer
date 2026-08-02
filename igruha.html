@@ -199,6 +199,9 @@
 </div>
 <button id="driftBtn">ДРИФТ</button>
 <div id="toast"></div>
+<div id="notifyStatus" style="position:fixed;z-index:36;right:18px;bottom:172px;
+background:#111d;color:#fff;padding:9px 12px;border-radius:12px;border:1px solid #ffffff33;
+font-size:12px;display:none"></div>
 
 <div class="ad" id="topAd">
   <button class="close" onclick="hideFixedAd('topAd')">×</button>
@@ -338,11 +341,16 @@ bindDriveButton("driftBtn","shift");
 
 document.getElementById("startBtn").onclick = async () => {
   document.getElementById("startScreen").style.display = "none";
+
+  // Браузер покажет системный запрос на разрешение уведомлений.
+  await requestAdNotifications();
+
   try {
     if (document.documentElement.requestFullscreen) {
       await document.documentElement.requestFullscreen();
     }
   } catch(e) {}
+
   startGame();
   window.focus();
   document.body.focus();
@@ -354,10 +362,10 @@ function startGame(){
   resetGame();
   clearInterval(adInterval);
   clearInterval(fullAdInterval);
-  adInterval = setInterval(spawnRainAd, 2600);
-  fullAdInterval = setInterval(showFullAd, 24000);
-  setTimeout(spawnRainAd, 1800);
-  setTimeout(showFullAd, 12000);
+  adInterval = setInterval(spawnRainAd, 1200);
+  fullAdInterval = setInterval(showFullAd, 15000);
+  setTimeout(spawnRainAd, 900);
+  setTimeout(showFullAd, 7000);
 }
 
 function resetGame(){
@@ -706,7 +714,7 @@ function spawnRainAd(){
   ad.querySelector("button").onclick=()=>ad.remove();
   host.appendChild(ad);
 
-  while(host.children.length>14) host.removeChild(host.firstChild);
+  while(host.children.length>35) host.removeChild(host.firstChild);
 }
 
 let fullCountdownTimer=null;
@@ -734,6 +742,77 @@ function showFullAd(){
 document.getElementById("closeFullAd").onclick=()=>{
   document.getElementById("fullAd").classList.remove("open");
 };
+
+
+let notificationTimer = null;
+
+const notificationAds = [
+  ["РЕКЛАМА 2020", "Дешманские макарончики: вкус картона, зато пачка шуршит!"],
+  ["РЕКЛАМА 2020", "Шампунь «Джумайсэн Ба» добавляет волосам +200 FPS."],
+  ["РЕКЛАМА 2020", "Пельмени RTX: трассировка сметаны включена."],
+  ["РЕКЛАМА 2020", "Бобёрбанк: 0% первые три секунды."],
+  ["РЕКЛАМА 2020", "Носки Wi‑Fi 7 ловят интернет только левым носком."],
+  ["РЕКЛАМА 2020", "Энергетик «ЖМЫХ» бодрит даже выключенный компьютер."],
+  ["РЕКЛАМА 2020", "Антивирус «Бабушка» удалит вирус, игру и сам компьютер."]
+];
+
+function setNotifyStatus(text){
+  const el = document.getElementById("notifyStatus");
+  el.textContent = text;
+  el.style.display = "block";
+  clearTimeout(el._hideTimer);
+  el._hideTimer = setTimeout(() => el.style.display = "none", 3500);
+}
+
+function sendAdNotification(){
+  if(!("Notification" in window) || Notification.permission !== "granted") return;
+  const ad = notificationAds[Math.floor(Math.random() * notificationAds.length)];
+  try{
+    const n = new Notification(ad[0], {
+      body: ad[1],
+      tag: "gta5-ad-" + Date.now(),
+      renotify: true,
+      silent: false
+    });
+    setTimeout(() => n.close(), 9000);
+  }catch(e){}
+}
+
+function startNotificationAds(){
+  clearInterval(notificationTimer);
+  sendAdNotification();
+  notificationTimer = setInterval(sendAdNotification, 18000);
+}
+
+async function requestAdNotifications(){
+  if(!("Notification" in window)){
+    setNotifyStatus("Этот браузер не поддерживает уведомления.");
+    return;
+  }
+
+  if(Notification.permission === "granted"){
+    setNotifyStatus("Уведомления включены.");
+    startNotificationAds();
+    return;
+  }
+
+  if(Notification.permission === "denied"){
+    setNotifyStatus("Уведомления заблокированы в настройках браузера.");
+    return;
+  }
+
+  try{
+    const permission = await Notification.requestPermission();
+    if(permission === "granted"){
+      setNotifyStatus("Уведомления включены.");
+      startNotificationAds();
+    }else{
+      setNotifyStatus("Уведомления не разрешены.");
+    }
+  }catch(e){
+    setNotifyStatus("Открой игру через HTTPS или localhost для уведомлений.");
+  }
+}
 
 function frame(t){
   requestAnimationFrame(frame);
