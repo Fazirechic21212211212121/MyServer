@@ -59,11 +59,11 @@
 
   /* Реклама 2020 */
   .ad{
-    position:fixed;z-index:40;color:#111;background:#fff;border:4px solid #ffe100;
+    position:fixed;z-index:30;pointer-events:none;color:#111;background:#fff;border:4px solid #ffe100;
     box-shadow:0 10px 30px #0009;text-align:center;font-weight:850;
   }
   .ad small{display:block;font-size:10px;opacity:.62}
-  .ad .close{
+  .ad .close{display:none;
     position:absolute;right:3px;top:3px;width:23px;height:23px;padding:0;border:0;border-radius:50%;
     background:#111;color:#fff;cursor:pointer;font-weight:900;
   }
@@ -81,19 +81,18 @@
 
   #adRain{position:fixed;inset:0;z-index:45;pointer-events:none}
   .rain-ad{
-    position:absolute;pointer-events:auto;width:190px;min-height:92px;padding:15px 11px 10px;
+    position:absolute;pointer-events:none;width:180px;min-height:82px;padding:12px 9px 9px;
+    opacity:.72;
     color:#101010;background:#fff;border:4px solid var(--accent,#ffe100);
     box-shadow:0 8px 22px #000a;text-align:center;font-weight:900;
     animation:pop .18s ease-out;
   }
-  .rain-ad button{
-    position:absolute;right:2px;top:2px;width:22px;height:22px;border:0;border-radius:50%;
-    color:#fff;background:#111;cursor:pointer;
-  }
+  .rain-ad button{display:none}
   @keyframes pop{from{transform:scale(.3) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(var(--rot,0deg));opacity:1}}
 
   #fullAd{
-    position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+    position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;
+    pointer-events:none;opacity:.62;
     background:
       repeating-linear-gradient(45deg,#ffea00 0 30px,#ff3a42 30px 60px);
     color:#111;text-align:center;
@@ -152,6 +151,71 @@
     #drivePad,#driftBtn{opacity:.28}
     #drivePad:hover,#driftBtn:hover{opacity:1}
   }
+
+  #macaroniMegaAd{
+    position:fixed;
+    z-index:18;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%) rotate(-4deg);
+    width:92vw;
+    height:78vh;
+    pointer-events:none;
+    opacity:.18;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:#ffeb00;
+    text-shadow:
+      0 6px 0 #d71920,
+      0 12px 25px #000,
+      0 0 50px #ff2a2a;
+    font-weight:1000;
+    font-size:clamp(58px,12vw,190px);
+    line-height:.72;
+    letter-spacing:-8px;
+    animation:megaPulse 1.2s infinite alternate ease-in-out;
+  }
+  #macaroniMegaAd span{
+    display:block;
+    color:#fff;
+    font-size:.33em;
+    letter-spacing:2px;
+    margin-top:35px;
+    text-shadow:0 4px 0 #111,0 0 18px #000;
+  }
+  #macaroniTicker{
+    position:fixed;
+    z-index:19;
+    left:0;
+    bottom:0;
+    width:100%;
+    overflow:hidden;
+    white-space:nowrap;
+    pointer-events:none;
+    background:#ffeb00dd;
+    color:#111;
+    border-top:5px solid #d71920;
+    border-bottom:5px solid #d71920;
+    font-size:28px;
+    font-weight:1000;
+    padding:8px 0;
+  }
+  #macaroniTicker div{
+    display:inline-block;
+    padding-left:100%;
+    animation:tickerMove 9s linear infinite;
+  }
+  @keyframes megaPulse{
+    from{transform:translate(-50%,-50%) rotate(-5deg) scale(.95)}
+    to{transform:translate(-50%,-50%) rotate(-3deg) scale(1.04)}
+  }
+  @keyframes tickerMove{
+    from{transform:translateX(0)}
+    to{transform:translateX(-100%)}
+  }
+
 </style>
 </head>
 <body>
@@ -199,9 +263,6 @@
 </div>
 <button id="driftBtn">ДРИФТ</button>
 <div id="toast"></div>
-<div id="notifyStatus" style="position:fixed;z-index:36;right:18px;bottom:172px;
-background:#111d;color:#fff;padding:9px 12px;border-radius:12px;border:1px solid #ffffff33;
-font-size:12px;display:none"></div>
 
 <div class="ad" id="topAd">
   <button class="close" onclick="hideFixedAd('topAd')">×</button>
@@ -233,6 +294,19 @@ font-size:12px;display:none"></div>
 
 <div id="adRain"></div>
 
+<div id="macaroniMegaAd">
+  ДЕШМАНСКИЕ<br>МАКАРОНЧИКИ
+  <span>ВКУС КАРТОНА — ЦЕНА САМОЛЁТА 🍝</span>
+</div>
+
+<div id="macaroniTicker">
+  <div>
+    РЕКЛАМА 2020 • ДЕШМАНСКИЕ МАКАРОНЧИКИ • КУПИ ПАЧКУ — ПОЛУЧИ ВТОРУЮ ПУСТУЮ •
+    СОУС «КАК ПОВЕЗЁТ» • ХРУСТЯТ ДАЖЕ ПОСЛЕ ВАРКИ • РЕКЛАМА 2020 •
+  </div>
+</div>
+
+
 <div id="fullAd">
   <div class="full-inner">
     <div class="full-kicker">РЕКЛАМА 2020</div>
@@ -240,7 +314,7 @@ font-size:12px;display:none"></div>
     <div class="macaroni">🍝🍝🍝</div>
     <h2>Вкус картона. Цена самолёта. Зато пачка шуршит!</h2>
     <p>Теперь со вкусом «Тралалеро на минималках» и соусом «Великий сброс мемов».</p>
-    <button id="closeFullAd" disabled>Закрыть через 4</button>
+    <button id="closeFullAd" style="display:none">Закрыть</button>
     <div id="adCounter">*Количество макарончиков в пачке зависит от настроения завода.</div>
   </div>
 </div>
@@ -286,6 +360,11 @@ const memeAds = [
   ["НОСКИ WI‑FI 7", "Ловят интернет, но только левый носок."],
   ["КУРС «АУРА ФАРМИНГ»", "Стой красиво у реки и ничего не объясняй."],
   ["МАКАРОНЫ ULTRA LITE", "Вес пачки меньше, цена почему-то больше."],
+  ["ДЕШМАНСКИЕ МАКАРОНЧИКИ", "Хрустят до, во время и после варки."],
+  ["МАКАРОНЫ «КАРТОНЧИНО»", "Теперь с настоящим вкусом упаковки."],
+  ["МАКАРОШКИ 2020", "Пачка огромная. Внутри семь штук."],
+  ["МАКАРОНЫ «ЭКОНОМ ПЛЮС»", "Плюс только в названии."],
+  ["ЛАПША «НЕ ДОШИК»", "Заваривается за три рабочих дня."],
   ["АНТИВИРУС «БАБУШКА»", "Удалит вирус, игру и сам компьютер."]
 ];
 
@@ -341,16 +420,11 @@ bindDriveButton("driftBtn","shift");
 
 document.getElementById("startBtn").onclick = async () => {
   document.getElementById("startScreen").style.display = "none";
-
-  // Браузер покажет системный запрос на разрешение уведомлений.
-  await requestAdNotifications();
-
   try {
     if (document.documentElement.requestFullscreen) {
       await document.documentElement.requestFullscreen();
     }
   } catch(e) {}
-
   startGame();
   window.focus();
   document.body.focus();
@@ -362,10 +436,10 @@ function startGame(){
   resetGame();
   clearInterval(adInterval);
   clearInterval(fullAdInterval);
-  adInterval = setInterval(spawnRainAd, 1200);
-  fullAdInterval = setInterval(showFullAd, 15000);
-  setTimeout(spawnRainAd, 900);
-  setTimeout(showFullAd, 7000);
+  adInterval = setInterval(spawnRainAd, 650);
+  fullAdInterval = setInterval(showFullAd, 12000);
+  setTimeout(spawnRainAd, 500);
+  setTimeout(showFullAd, 6500);
 }
 
 function resetGame(){
@@ -708,13 +782,19 @@ function spawnRainAd(){
   ad.className="rain-ad";
   ad.style.setProperty("--accent",accents[Math.floor(Math.random()*accents.length)]);
   ad.style.setProperty("--rot",(Math.random()*8-4)+"deg");
-  ad.style.left=Math.max(8,Math.random()*(W-205))+"px";
-  ad.style.top=Math.max(65,Math.random()*(H-180))+"px";
+  const edge = Math.random();
+  if(edge < .5){
+    ad.style.left = (Math.random() < .5 ? 8 : Math.max(8, W - 198)) + "px";
+    ad.style.top = Math.max(60, Math.random() * (H - 165)) + "px";
+  }else{
+    ad.style.left = Math.max(8, Math.random() * (W - 198)) + "px";
+    ad.style.top = (Math.random() < .5 ? 58 : Math.max(58, H - 112)) + "px";
+  }
   ad.innerHTML='<button>×</button><small>РЕКЛАМА 2020</small><div>'+item[0]+'</div><small>'+item[1]+'</small>';
   ad.querySelector("button").onclick=()=>ad.remove();
   host.appendChild(ad);
 
-  while(host.children.length>35) host.removeChild(host.firstChild);
+  while(host.children.length>70) host.removeChild(host.firstChild);
 }
 
 let fullCountdownTimer=null;
@@ -723,96 +803,11 @@ function showFullAd(){
   const wrap=document.getElementById("fullAd");
   const btn=document.getElementById("closeFullAd");
   wrap.classList.add("open");
-  btn.disabled=true;
-  let n=4;
-  btn.textContent="Закрыть через "+n;
-  clearInterval(fullCountdownTimer);
-  fullCountdownTimer=setInterval(()=>{
-    n--;
-    if(n>0){
-      btn.textContent="Закрыть через "+n;
-    }else{
-      clearInterval(fullCountdownTimer);
-      btn.disabled=false;
-      btn.textContent="НЕТ, СПАСИБО, Я УЖЕ НАЕЛСЯ";
-    }
-  },1000);
+  clearTimeout(wrap._hideTimer);
+  wrap._hideTimer=setTimeout(()=>wrap.classList.remove("open"),4500);
 }
 
-document.getElementById("closeFullAd").onclick=()=>{
-  document.getElementById("fullAd").classList.remove("open");
-};
 
-
-let notificationTimer = null;
-
-const notificationAds = [
-  ["РЕКЛАМА 2020", "Дешманские макарончики: вкус картона, зато пачка шуршит!"],
-  ["РЕКЛАМА 2020", "Шампунь «Джумайсэн Ба» добавляет волосам +200 FPS."],
-  ["РЕКЛАМА 2020", "Пельмени RTX: трассировка сметаны включена."],
-  ["РЕКЛАМА 2020", "Бобёрбанк: 0% первые три секунды."],
-  ["РЕКЛАМА 2020", "Носки Wi‑Fi 7 ловят интернет только левым носком."],
-  ["РЕКЛАМА 2020", "Энергетик «ЖМЫХ» бодрит даже выключенный компьютер."],
-  ["РЕКЛАМА 2020", "Антивирус «Бабушка» удалит вирус, игру и сам компьютер."]
-];
-
-function setNotifyStatus(text){
-  const el = document.getElementById("notifyStatus");
-  el.textContent = text;
-  el.style.display = "block";
-  clearTimeout(el._hideTimer);
-  el._hideTimer = setTimeout(() => el.style.display = "none", 3500);
-}
-
-function sendAdNotification(){
-  if(!("Notification" in window) || Notification.permission !== "granted") return;
-  const ad = notificationAds[Math.floor(Math.random() * notificationAds.length)];
-  try{
-    const n = new Notification(ad[0], {
-      body: ad[1],
-      tag: "gta5-ad-" + Date.now(),
-      renotify: true,
-      silent: false
-    });
-    setTimeout(() => n.close(), 9000);
-  }catch(e){}
-}
-
-function startNotificationAds(){
-  clearInterval(notificationTimer);
-  sendAdNotification();
-  notificationTimer = setInterval(sendAdNotification, 18000);
-}
-
-async function requestAdNotifications(){
-  if(!("Notification" in window)){
-    setNotifyStatus("Этот браузер не поддерживает уведомления.");
-    return;
-  }
-
-  if(Notification.permission === "granted"){
-    setNotifyStatus("Уведомления включены.");
-    startNotificationAds();
-    return;
-  }
-
-  if(Notification.permission === "denied"){
-    setNotifyStatus("Уведомления заблокированы в настройках браузера.");
-    return;
-  }
-
-  try{
-    const permission = await Notification.requestPermission();
-    if(permission === "granted"){
-      setNotifyStatus("Уведомления включены.");
-      startNotificationAds();
-    }else{
-      setNotifyStatus("Уведомления не разрешены.");
-    }
-  }catch(e){
-    setNotifyStatus("Открой игру через HTTPS или localhost для уведомлений.");
-  }
-}
 
 function frame(t){
   requestAnimationFrame(frame);
