@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GTA 5 — Drift Edition</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#111;font-family:Segoe UI,Arial,sans-serif;color:#fff}
+  canvas{display:block;width:100%;height:100%}
+
+  #startScreen{
+    position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
+    background:
+      radial-gradient(circle at 20% 20%,#245c3a 0 15%,transparent 45%),
+      radial-gradient(circle at 80% 75%,#643c13 0 10%,transparent 42%),
+      linear-gradient(135deg,#080b0d,#16251b 58%,#111);
+  }
+  .start-card{
+    width:min(760px,92vw);padding:38px;border-radius:28px;text-align:center;
+    background:rgba(10,13,15,.94);border:1px solid #ffffff22;
+    box-shadow:0 30px 100px #000c;
+  }
+  .logo{font-size:clamp(42px,8vw,78px);font-weight:1000;letter-spacing:-4px;line-height:.9}
+  .logo span{color:#70ff78}
+  .update{
+    display:inline-block;margin:18px 0 8px;padding:8px 14px;border-radius:999px;
+    color:#071b09;background:#70ff78;font-weight:900;
+  }
+  .features{font-size:18px;line-height:1.65;opacity:.9}
+  #startBtn{
+    margin-top:20px;padding:17px 50px;border:0;border-radius:15px;
+    font-size:25px;font-weight:1000;cursor:pointer;color:#071b09;background:#70ff78;
+    box-shadow:0 0 30px #70ff7855;transition:.15s;
+  }
+  #startBtn:hover{transform:scale(1.05);filter:brightness(1.07)}
+  .tiny{margin-top:15px;font-size:12px;opacity:.55}
+
+  .hud{
+    position:fixed;z-index:20;top:15px;left:15px;padding:12px 15px;border-radius:14px;
+    background:#050505c9;border:1px solid #ffffff25;line-height:1.45;backdrop-filter:blur(5px);
+  }
+  .hud b{color:#70ff78}
+  #controls{
+    position:fixed;z-index:20;top:15px;right:15px;padding:12px 15px;border-radius:14px;
+    background:#050505c9;border:1px solid #ffffff25;text-align:right;line-height:1.45;
+  }
+  #driftBanner{
+    position:fixed;z-index:25;left:50%;top:16%;transform:translateX(-50%) scale(.7);
+    font-size:clamp(30px,5vw,68px);font-weight:1000;font-style:italic;
+    color:#ffdf43;text-shadow:0 5px 0 #b33,0 8px 16px #000;
+    opacity:0;pointer-events:none;transition:.12s;
+  }
+  #driftBanner.show{opacity:1;transform:translateX(-50%) scale(1)}
+  #toast{
+    position:fixed;z-index:25;left:50%;top:27%;transform:translateX(-50%);
+    font-size:28px;font-weight:900;text-shadow:0 4px 10px #000;
+  }
+
+  /* Реклама 2020 */
+  .ad{
+    position:fixed;z-index:40;color:#111;background:#fff;border:4px solid #ffe100;
+    box-shadow:0 10px 30px #0009;text-align:center;font-weight:850;
+  }
+  .ad small{display:block;font-size:10px;opacity:.62}
+  .ad .close{
+    position:absolute;right:3px;top:3px;width:23px;height:23px;padding:0;border:0;border-radius:50%;
+    background:#111;color:#fff;cursor:pointer;font-weight:900;
+  }
+  #topAd{
+    top:6px;left:50%;transform:translateX(-50%);width:min(510px,48vw);
+    padding:7px 35px;border-color:#ff63cd;background:linear-gradient(90deg,#ffe8f9,#fff);
+  }
+  #leftAd{left:7px;top:155px;width:155px;padding:14px 9px;transform:rotate(-1deg)}
+  #rightAd{right:7px;top:170px;width:160px;padding:14px 9px;transform:rotate(1deg);border-color:#55ddff}
+  #bottomAd{
+    left:50%;bottom:6px;transform:translateX(-50%);width:min(670px,72vw);
+    padding:8px 38px;border-color:#72ff78;background:linear-gradient(90deg,#fff,#e9ffe9);
+  }
+  .price{display:inline-block;margin-top:5px;padding:4px 9px;border-radius:999px;background:#ff3f49;color:#fff}
+
+  #adRain{position:fixed;inset:0;z-index:45;pointer-events:none}
+  .rain-ad{
+    position:absolute;pointer-events:auto;width:190px;min-height:92px;padding:15px 11px 10px;
+    color:#101010;background:#fff;border:4px solid var(--accent,#ffe100);
+    box-shadow:0 8px 22px #000a;text-align:center;font-weight:900;
+    animation:pop .18s ease-out;
+  }
+  .rain-ad button{
+    position:absolute;right:2px;top:2px;width:22px;height:22px;border:0;border-radius:50%;
+    color:#fff;background:#111;cursor:pointer;
+  }
+  @keyframes pop{from{transform:scale(.3) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(var(--rot,0deg));opacity:1}}
+
+  #fullAd{
+    position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+    background:
+      repeating-linear-gradient(45deg,#ffea00 0 30px,#ff3a42 30px 60px);
+    color:#111;text-align:center;
+  }
+  #fullAd.open{display:flex}
+  .full-inner{
+    width:min(900px,92vw);padding:40px 25px;background:#fff;border:12px solid #111;
+    box-shadow:0 0 0 12px #fff,0 30px 100px #000b;transform:rotate(-.6deg);
+  }
+  .full-kicker{font-size:18px;font-weight:1000;background:#111;color:#fff;display:inline-block;padding:6px 12px}
+  .full-title{font-size:clamp(46px,10vw,118px);font-weight:1000;line-height:.8;margin:25px 0 15px;letter-spacing:-5px}
+  .full-title span{color:#ff3039}
+  .macaroni{font-size:clamp(45px,8vw,95px);filter:drop-shadow(0 8px 0 #ffd100)}
+  #closeFullAd{
+    margin-top:23px;padding:14px 35px;border:4px solid #111;background:#70ff78;
+    font-size:20px;font-weight:1000;cursor:pointer;
+  }
+  #closeFullAd:disabled{cursor:not-allowed;background:#ccc;color:#666}
+  #adCounter{margin-top:10px;font-size:14px;opacity:.7}
+
+  #gameOver{
+    position:fixed;inset:0;z-index:90;display:none;align-items:center;justify-content:center;background:#000d;
+  }
+  #gameOver .box{padding:35px;border-radius:20px;background:#181818;text-align:center;border:1px solid #ffffff22}
+  #restartBtn{padding:13px 28px;border:0;border-radius:12px;background:#70ff78;font-weight:900;font-size:18px;cursor:pointer}
+
+  @media(max-width:900px){
+    #leftAd,#rightAd{display:none}
+    #topAd{width:62vw}
+    #bottomAd{width:88vw}
+    #controls{font-size:12px}
+  }
+
+  #drivePad{
+    position:fixed;z-index:35;left:18px;bottom:85px;
+    display:grid;grid-template-columns:64px 64px 64px;grid-template-rows:58px 58px;
+    gap:8px;user-select:none;
+  }
+  .driveBtn{
+    border:2px solid #ffffff55;border-radius:14px;background:#111d;color:#fff;
+    font-size:25px;font-weight:900;cursor:pointer;touch-action:none;
+    box-shadow:0 6px 18px #0008;
+  }
+  .driveBtn:active,.driveBtn.active{background:#70ff78;color:#071b09}
+  #btnUp{grid-column:2;grid-row:1}
+  #btnLeft{grid-column:1;grid-row:2}
+  #btnDown{grid-column:2;grid-row:2}
+  #btnRight{grid-column:3;grid-row:2}
+  #driftBtn{
+    position:fixed;z-index:35;right:20px;bottom:90px;width:110px;height:70px;
+    border:3px solid #ffe246;border-radius:18px;background:#191919dd;color:#ffe246;
+    font-size:18px;font-weight:1000;cursor:pointer;touch-action:none;
+  }
+  #driftBtn:active,#driftBtn.active{background:#ffe246;color:#111}
+  @media(min-width:1000px){
+    #drivePad,#driftBtn{opacity:.28}
+    #drivePad:hover,#driftBtn:hover{opacity:1}
+  }
+</style>
+</head>
+<body>
+
+<canvas id="game"></canvas>
+
+<div id="startScreen">
+  <div class="start-card">
+    <div class="logo"><span>GTA 5</span><br>DRIFT EDITION</div>
+    <div class="update">НОВОЕ ОБНОВЛЕНИЕ</div>
+    <div class="features">
+      Теперь есть настоящая дорога, ускорение и торможение.<br>
+      Зажми <b>SHIFT</b> или <b>ПРОБЕЛ</b> в повороте, чтобы дрифтить.<br>
+      Собирай деньги, уходи от полиции и ставь рекорды.
+    </div>
+    <button id="startBtn">СТАРТ</button>
+    <div class="tiny">ESC — выйти из полноэкранного режима.</div>
+  </div>
+</div>
+
+<div class="hud">
+  <b>GTA 5: Drift</b><br>
+  Скорость: <span id="speed">0</span> км/ч<br>
+  Деньги: $<span id="money">0</span><br>
+  Жизни: <span id="lives">3</span><br>
+  Дрифт: <span id="driftScore">0</span><br>
+  Розыск: <span id="stars">☆☆☆☆☆</span>
+</div>
+
+<div id="controls">
+  W / ↑ — газ и движение вперёд<br>
+  S / ↓ — тормоз<br>
+  A D / ← → — руль<br>
+  SHIFT / ПРОБЕЛ — дрифт<br>
+  R — заново
+</div>
+
+<div id="driftBanner">DRIFT!</div>
+
+<div id="drivePad">
+  <button class="driveBtn" id="btnUp">▲</button>
+  <button class="driveBtn" id="btnLeft">◀</button>
+  <button class="driveBtn" id="btnDown">▼</button>
+  <button class="driveBtn" id="btnRight">▶</button>
+</div>
+<button id="driftBtn">ДРИФТ</button>
+<div id="toast"></div>
+
+<div class="ad" id="topAd">
+  <button class="close" onclick="hideFixedAd('topAd')">×</button>
+  <small>РЕКЛАМА 2020</small>
+  <b>2026 — ЭТО НОВЫЙ 2016: скачай старый интернет заново!</b>
+</div>
+
+<div class="ad" id="leftAd">
+  <button class="close" onclick="hideFixedAd('leftAd')">×</button>
+  <small>РЕКЛАМА 2020</small>
+  <b>365 КНОПОК</b><br>
+  Одна кнопка на каждый день.
+  <span class="price">Смысл не объясняем</span>
+</div>
+
+<div class="ad" id="rightAd">
+  <button class="close" onclick="hideFixedAd('rightAd')">×</button>
+  <small>РЕКЛАМА 2020</small>
+  <b>СТРАХОВКА «ДЖИМОТИ»</b><br>
+  От енота, который уже всё понял.
+  <span class="price">son 😭</span>
+</div>
+
+<div class="ad" id="bottomAd">
+  <button class="close" onclick="hideFixedAd('bottomAd')">×</button>
+  <small>РЕКЛАМА 2020</small>
+  <b>ШАМПУНЬ «ДЖУМАЙСЭН БА» — +200 FPS волосам и -300 IQ перхоти</b>
+</div>
+
+<div id="adRain"></div>
+
+<div id="fullAd">
+  <div class="full-inner">
+    <div class="full-kicker">РЕКЛАМА 2020</div>
+    <div class="full-title">ДЕШМАНСКИЕ<br><span>МАКАРОНЧИКИ</span></div>
+    <div class="macaroni">🍝🍝🍝</div>
+    <h2>Вкус картона. Цена самолёта. Зато пачка шуршит!</h2>
+    <p>Теперь со вкусом «Тралалеро на минималках» и соусом «Великий сброс мемов».</p>
+    <button id="closeFullAd" disabled>Закрыть через 4</button>
+    <div id="adCounter">*Количество макарончиков в пачке зависит от настроения завода.</div>
+  </div>
+</div>
+
+<div id="gameOver">
+  <div class="box">
+    <h1>МАШИНА СЛОМАЛАСЬ</h1>
+    <p>Ты собрал $<span id="finalMoney">0</span> и надрифтил <span id="finalDrift">0</span> очков.</p>
+    <button id="restartBtn">ЕЩЁ РАЗ</button>
+  </div>
+</div>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let W = 0, H = 0, dpr = 1;
+let running = false;
+let keys = {};
+let money = 0, lives = 3, stars = 0, driftScore = 0;
+let roadScroll = 0, lastTime = 0;
+let cars = [], cash = [], smoke = [], skidMarks = [];
+let adInterval = null, fullAdInterval = null;
+
+const player = {
+  x: 0, y: 0, w: 46, h: 82,
+  speed: 0, maxSpeed: 12.5,
+  angle: 0, sideVelocity: 0,
+  invincible: 0
+};
+
+const memeAds = [
+  ["SON 😭", "Когда закрыл одну рекламу, а появились ещё четыре."],
+  ["365 КНОПОК", "Зачем? Это должно иметь смысл только для нас."],
+  ["ДЖИМОТИ-МОБИЛЬ", "Круглая машина. Круглые колёса. Совпадение?"],
+  ["2026 = НОВЫЙ 2016", "Купи ностальгию. Зарядка micro‑USB отдельно."],
+  ["ВЕЛИКИЙ СБРОС МЕМОВ", "Перезагрузим шутки. Пароль: 1234."],
+  ["ITALIAN BRAINROT VPN", "Ваш интернет теперь говорит «тра‑ла‑ла»."],
+  ["ШАМПУНЬ ДЖУМАЙСЭН БА", "+200 FPS волосам. Проверено на лысом мониторе."],
+  ["БОБЁРБАНК", "Кредит 0% первые 3 секунды."],
+  ["ПЕЛЬМЕНИ RTX", "Трассировка сметаны в реальном времени."],
+  ["ЭНЕРГЕТИК «ЖМЫХ»", "Бодрит даже выключенный компьютер."],
+  ["НОСКИ WI‑FI 7", "Ловят интернет, но только левый носок."],
+  ["КУРС «АУРА ФАРМИНГ»", "Стой красиво у реки и ничего не объясняй."],
+  ["МАКАРОНЫ ULTRA LITE", "Вес пачки меньше, цена почему-то больше."],
+  ["АНТИВИРУС «БАБУШКА»", "Удалит вирус, игру и сам компьютер."]
+];
+
+function resize(){
+  dpr = Math.min(devicePixelRatio || 1, 2);
+  W = innerWidth; H = innerHeight;
+  canvas.width = Math.floor(W * dpr);
+  canvas.height = Math.floor(H * dpr);
+  canvas.style.width = W + "px";
+  canvas.style.height = H + "px";
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  player.y = H * 0.72;
+  if (!player.x) player.x = W / 2;
+}
+addEventListener("resize", resize);
+resize();
+
+addEventListener("keydown", e => {
+  const k = e.key.toLowerCase();
+  if(["arrowup","arrowdown","arrowleft","arrowright"," ","shift"].includes(k)) e.preventDefault();
+  keys[k] = true;
+  if (k === "r") resetGame();
+});
+addEventListener("keyup", e => {
+  const k = e.key.toLowerCase();
+  if(["arrowup","arrowdown","arrowleft","arrowright"," ","shift"].includes(k)) e.preventDefault();
+  keys[k] = false;
+});
+addEventListener("blur", () => {
+  keys = {};
+});
+
+function bindDriveButton(id, keyName){
+  const b = document.getElementById(id);
+  const on = e => {
+    e.preventDefault();
+    keys[keyName] = true;
+    b.classList.add("active");
+  };
+  const off = e => {
+    e.preventDefault();
+    keys[keyName] = false;
+    b.classList.remove("active");
+  };
+  ["mousedown","touchstart","pointerdown"].forEach(ev => b.addEventListener(ev,on,{passive:false}));
+  ["mouseup","mouseleave","touchend","touchcancel","pointerup","pointercancel"].forEach(ev => b.addEventListener(ev,off,{passive:false}));
+}
+bindDriveButton("btnUp","w");
+bindDriveButton("btnDown","s");
+bindDriveButton("btnLeft","a");
+bindDriveButton("btnRight","d");
+bindDriveButton("driftBtn","shift");
+
+document.getElementById("startBtn").onclick = async () => {
+  document.getElementById("startScreen").style.display = "none";
+  try {
+    if (document.documentElement.requestFullscreen) {
+      await document.documentElement.requestFullscreen();
+    }
+  } catch(e) {}
+  startGame();
+  window.focus();
+  document.body.focus();
+};
+
+document.getElementById("restartBtn").onclick = resetGame;
+
+function startGame(){
+  resetGame();
+  clearInterval(adInterval);
+  clearInterval(fullAdInterval);
+  adInterval = setInterval(spawnRainAd, 2600);
+  fullAdInterval = setInterval(showFullAd, 24000);
+  setTimeout(spawnRainAd, 1800);
+  setTimeout(showFullAd, 12000);
+}
+
+function resetGame(){
+  money = 0; lives = 3; stars = 0; driftScore = 0;
+  cars = []; cash = []; smoke = []; skidMarks = [];
+  player.x = W / 2; player.y = H * .72;
+  player.speed = 3.2; player.angle = 0; player.sideVelocity = 0;
+  player.invincible = 0;
+  running = true;
+  document.getElementById("gameOver").style.display = "none";
+  updateHUD();
+}
+
+function roadCenterAt(y){
+  return W / 2 + Math.sin((roadScroll * .0025) + (y / H) * 1.5) * Math.min(90, W * .08);
+}
+
+function roadWidth(){
+  return Math.min(W * .72, 900);
+}
+
+function drawWorld(dt){
+  ctx.fillStyle = "#2b7339";
+  ctx.fillRect(0,0,W,H);
+
+  const rw = roadWidth();
+  ctx.beginPath();
+  for(let y=0;y<=H;y+=20){
+    const c = roadCenterAt(y);
+    if(y===0) ctx.moveTo(c-rw/2,y); else ctx.lineTo(c-rw/2,y);
+  }
+  for(let y=H;y>=0;y-=20){
+    const c = roadCenterAt(y);
+    ctx.lineTo(c+rw/2,y);
+  }
+  ctx.closePath();
+  ctx.fillStyle = "#303236";
+  ctx.fill();
+
+  // Обочина
+  ctx.lineWidth = 8;
+  ctx.strokeStyle = "#f1f1f1";
+  for(const side of [-1,1]){
+    ctx.beginPath();
+    for(let y=0;y<=H;y+=20){
+      const x = roadCenterAt(y) + side * rw/2;
+      if(y===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+  }
+
+
+  // Столбики у дороги, чтобы движение было заметно
+  const postOffset = roadScroll % 90;
+  for(let y=-90+postOffset;y<H;y+=90){
+    const c = roadCenterAt(y);
+    for(const side of [-1,1]){
+      const px = c + side*(rw/2+22);
+      ctx.fillStyle="#f3f3f3";
+      ctx.fillRect(px-4,y,8,25);
+      ctx.fillStyle="#e33";
+      ctx.fillRect(px-4,y+4,8,7);
+    }
+  }
+
+  // Разметка
+  const offset = roadScroll % 100;
+  ctx.lineWidth = 6;
+  ctx.strokeStyle = "#ffe246";
+  for(let lane=-1;lane<=1;lane++){
+    if(lane===0) continue;
+    for(let y=-100+offset;y<H;y+=100){
+      const c1 = roadCenterAt(y);
+      const c2 = roadCenterAt(y+55);
+      const lx = lane * rw/6;
+      ctx.beginPath();
+      ctx.moveTo(c1+lx,y);
+      ctx.lineTo(c2+lx,y+55);
+      ctx.stroke();
+    }
+  }
+
+  // Следы шин
+  ctx.lineCap = "round";
+  for(const m of skidMarks){
+    ctx.globalAlpha = m.life;
+    ctx.strokeStyle = "#111";
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(m.x1,m.y1);
+    ctx.lineTo(m.x2,m.y2);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  // Дым
+  for(const p of smoke){
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = "#d9d9d9";
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function updatePlayer(dt){
+  const gas = keys["w"] || keys["arrowup"];
+  const brake = keys["s"] || keys["arrowdown"];
+  const left = keys["a"] || keys["arrowleft"];
+  const right = keys["d"] || keys["arrowright"];
+  const drifting = keys["shift"] || keys[" "];
+
+  if(gas) player.speed += 11.5 * dt;
+  else if(player.speed > 3.2) player.speed -= 1.8 * dt;
+  else if(player.speed < 3.2) player.speed += 1.5 * dt;
+  if(brake) player.speed -= 14 * dt;
+  player.speed = Math.max(0, Math.min(player.maxSpeed, player.speed));
+
+  const steer = (right?1:0) - (left?1:0);
+  const steerPower = (1.4 + player.speed * .18) * dt;
+
+  if(drifting && Math.abs(steer) > 0 && player.speed > 4){
+    player.angle += steer * 2.9 * dt;
+    player.sideVelocity += steer * player.speed * 8.5 * dt;
+    player.sideVelocity *= Math.pow(.91, dt*60);
+
+    driftScore += Math.floor(player.speed * 2.2);
+    showDrift();
+
+    const rearY = player.y + player.h*.35;
+    const half = player.w*.28;
+    skidMarks.push({
+      x1:player.x-half, y1:rearY,
+      x2:player.x-half-player.sideVelocity*.025, y2:rearY+8,
+      life:1
+    });
+    skidMarks.push({
+      x1:player.x+half, y1:rearY,
+      x2:player.x+half-player.sideVelocity*.025, y2:rearY+8,
+      life:1
+    });
+
+    if(Math.random()<.55){
+      smoke.push({
+        x:player.x + (Math.random()-.5)*player.w,
+        y:rearY, r:5+Math.random()*8, life:.8
+      });
+    }
+  } else {
+    player.angle += steer * steerPower;
+    player.angle *= Math.pow(.86, dt*60);
+    player.sideVelocity *= Math.pow(.79, dt*60);
+  }
+
+  player.angle = Math.max(-.72, Math.min(.72, player.angle));
+  player.x += steer * player.speed * 22 * dt + player.sideVelocity * dt;
+
+  const rw = roadWidth();
+  const center = roadCenterAt(player.y);
+  const margin = player.w*.7;
+  const minX = center-rw/2+margin;
+  const maxX = center+rw/2-margin;
+
+  if(player.x < minX){
+    player.x = minX;
+    player.speed *= .94;
+    player.sideVelocity *= -.25;
+  }
+  if(player.x > maxX){
+    player.x = maxX;
+    player.speed *= .94;
+    player.sideVelocity *= -.25;
+  }
+
+  if(player.invincible>0) player.invincible -= dt;
+  roadScroll += player.speed * 33 * dt;
+}
+
+function drawCar(o, color, police=false, angle=0, blink=false){
+  ctx.save();
+  ctx.translate(o.x,o.y);
+  ctx.rotate(angle);
+  if(blink && Math.floor(performance.now()/100)%2===0) ctx.globalAlpha=.35;
+
+  ctx.fillStyle="#111";
+  ctx.fillRect(-o.w/2-5,-o.h/2+10,7,20);
+  ctx.fillRect(o.w/2-2,-o.h/2+10,7,20);
+  ctx.fillRect(-o.w/2-5,o.h/2-30,7,20);
+  ctx.fillRect(o.w/2-2,o.h/2-30,7,20);
+
+  ctx.fillStyle=color;
+  ctx.fillRect(-o.w/2,-o.h/2,o.w,o.h);
+  ctx.fillStyle="#15191f";
+  ctx.fillRect(-o.w/2+7,-o.h/2+11,o.w-14,18);
+  ctx.fillRect(-o.w/2+7,o.h/2-29,o.w-14,16);
+
+  ctx.fillStyle="#fff7a8";
+  ctx.fillRect(-o.w/2+5,-o.h/2+2,9,5);
+  ctx.fillRect(o.w/2-14,-o.h/2+2,9,5);
+
+  if(police){
+    ctx.fillStyle="#ff3131";ctx.fillRect(-14,-8,13,7);
+    ctx.fillStyle="#2f72ff";ctx.fillRect(1,-8,13,7);
+  }
+  ctx.restore();
+}
+
+function spawnTraffic(){
+  const rw = roadWidth();
+  const y = -100;
+  const center = roadCenterAt(y);
+  cars.push({
+    x:center + (Math.random()-.5)*(rw-120),
+    y, w:44, h:78,
+    v:2.4+Math.random()*3.8,
+    police:Math.random()<.24,
+    color:["#efefef","#ff5757","#68a9ff","#f9d34a","#a378f0"][Math.floor(Math.random()*5)]
+  });
+}
+
+function spawnCash(){
+  const rw = roadWidth();
+  const y = -40;
+  const center = roadCenterAt(y);
+  cash.push({
+    x:center+(Math.random()-.5)*(rw-100),
+    y,r:16,v:1.5+Math.random()*2
+  });
+}
+
+function overlap(a,b){
+  return Math.abs(a.x-b.x) < (a.w+b.w)*.42 &&
+         Math.abs(a.y-b.y) < (a.h+b.h)*.42;
+}
+
+function updateObjects(dt){
+  const scroll = player.speed * 32 * dt;
+
+  if(Math.random()<.008 + player.speed*.0008) spawnTraffic();
+  if(Math.random()<.006) spawnCash();
+
+  for(let i=cars.length-1;i>=0;i--){
+    const p=cars[i];
+    p.y += scroll + p.v*18*dt;
+    drawCar(p,p.police?"#f5f5f5":p.color,p.police,0,false);
+
+    if(overlap(player,p) && player.invincible<=0){
+      lives--;
+      stars=Math.min(5,stars+1);
+      player.speed*=.4;
+      player.invincible=2;
+      toast("БАБАХ! Полиция поставила лайк.");
+      updateHUD();
+      cars.splice(i,1);
+      if(lives<=0) gameOver();
+    } else if(p.y>H+120){
+      cars.splice(i,1);
+    }
+  }
+
+  for(let i=cash.length-1;i>=0;i--){
+    const q=cash[i];
+    q.y += scroll + q.v*15*dt;
+    ctx.beginPath();ctx.arc(q.x,q.y,q.r,0,Math.PI*2);
+    ctx.fillStyle="#72ff78";ctx.fill();
+    ctx.fillStyle="#07370b";ctx.font="900 19px Arial";ctx.textAlign="center";
+    ctx.fillText("$",q.x,q.y+7);
+
+    if(Math.abs(player.x-q.x)<player.w*.75 && Math.abs(player.y-q.y)<player.h*.55){
+      money+=100;
+      stars=Math.min(5,Math.floor(money/600));
+      toast("+$100, налог на рекламу уже списан");
+      cash.splice(i,1);
+      updateHUD();
+    } else if(q.y>H+50){
+      cash.splice(i,1);
+    }
+  }
+
+  for(const p of smoke){
+    p.y += scroll*.5;
+    p.r += 18*dt;
+    p.life -= .7*dt;
+  }
+  smoke = smoke.filter(p=>p.life>0);
+
+  for(const m of skidMarks){
+    m.y1 += scroll;
+    m.y2 += scroll;
+    m.life -= .12*dt;
+  }
+  skidMarks = skidMarks.filter(m=>m.life>0 && m.y1<H+30);
+}
+
+let driftHideTimer;
+function showDrift(){
+  const el=document.getElementById("driftBanner");
+  el.textContent="DRIFT +" + Math.max(1,Math.floor(player.speed*2));
+  el.classList.add("show");
+  clearTimeout(driftHideTimer);
+  driftHideTimer=setTimeout(()=>el.classList.remove("show"),180);
+}
+
+let toastTimer;
+function toast(text){
+  const el=document.getElementById("toast");
+  el.textContent=text;
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.textContent="",1000);
+}
+
+function updateHUD(){
+  document.getElementById("speed").textContent=Math.floor(player.speed*17);
+  document.getElementById("money").textContent=money;
+  document.getElementById("lives").textContent=lives;
+  document.getElementById("driftScore").textContent=driftScore;
+  document.getElementById("stars").textContent="★".repeat(stars)+"☆".repeat(5-stars);
+}
+
+function gameOver(){
+  running=false;
+  document.getElementById("finalMoney").textContent=money;
+  document.getElementById("finalDrift").textContent=driftScore;
+  document.getElementById("gameOver").style.display="flex";
+}
+
+function hideFixedAd(id){
+  const ad=document.getElementById(id);
+  ad.style.display="none";
+  setTimeout(()=>ad.style.display="block",5000+Math.random()*5000);
+}
+
+function spawnRainAd(){
+  if(!running || document.getElementById("fullAd").classList.contains("open")) return;
+  const host=document.getElementById("adRain");
+  const ad=document.createElement("div");
+  const item=memeAds[Math.floor(Math.random()*memeAds.length)];
+  const accents=["#ffe100","#ff60c8","#5ee7ff","#72ff78","#ff555d"];
+  ad.className="rain-ad";
+  ad.style.setProperty("--accent",accents[Math.floor(Math.random()*accents.length)]);
+  ad.style.setProperty("--rot",(Math.random()*8-4)+"deg");
+  ad.style.left=Math.max(8,Math.random()*(W-205))+"px";
+  ad.style.top=Math.max(65,Math.random()*(H-180))+"px";
+  ad.innerHTML='<button>×</button><small>РЕКЛАМА 2020</small><div>'+item[0]+'</div><small>'+item[1]+'</small>';
+  ad.querySelector("button").onclick=()=>ad.remove();
+  host.appendChild(ad);
+
+  while(host.children.length>14) host.removeChild(host.firstChild);
+}
+
+let fullCountdownTimer=null;
+function showFullAd(){
+  if(!running)return;
+  const wrap=document.getElementById("fullAd");
+  const btn=document.getElementById("closeFullAd");
+  wrap.classList.add("open");
+  btn.disabled=true;
+  let n=4;
+  btn.textContent="Закрыть через "+n;
+  clearInterval(fullCountdownTimer);
+  fullCountdownTimer=setInterval(()=>{
+    n--;
+    if(n>0){
+      btn.textContent="Закрыть через "+n;
+    }else{
+      clearInterval(fullCountdownTimer);
+      btn.disabled=false;
+      btn.textContent="НЕТ, СПАСИБО, Я УЖЕ НАЕЛСЯ";
+    }
+  },1000);
+}
+
+document.getElementById("closeFullAd").onclick=()=>{
+  document.getElementById("fullAd").classList.remove("open");
+};
+
+function frame(t){
+  requestAnimationFrame(frame);
+  const dt=Math.min(.033,(t-lastTime)/1000||0);
+  lastTime=t;
+
+  drawWorld(dt);
+
+  if(running){
+    updatePlayer(dt);
+    updateObjects(dt);
+    drawCar(player,"#ffd032",false,player.angle,player.invincible>0);
+    updateHUD();
+  }else{
+    drawCar(player,"#ffd032",false,player.angle,false);
+  }
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
