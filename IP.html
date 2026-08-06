@@ -1,1 +1,104 @@
-2
+        });
+      }
+
+      function captchaSolved() {
+        showStage("transition", 0);
+        let left = 3;
+        const counter = document.getElementById("counter");
+        const countWord = document.getElementById("count-word");
+        const bar = document.getElementById("count-bar");
+        const timer = setInterval(() => {
+          left -= 1;
+          if (left <= 0) {
+            clearInterval(timer);
+            showStage("license", 1);
+            setTimeout(() => document.getElementById("license").focus(), 30);
+            return;
+          }
+          counter.textContent = left;
+          countWord.textContent = left === 1 ? "1 секунду" : left + " секунды";
+          bar.style.animation = "none";
+          void bar.offsetWidth;
+          bar.style.animation = "tick 1s linear both";
+        }, 1000);
+      }
+
+      window.__novaHCaptchaReady = () => {
+        try {
+          widgetId = window.hcaptcha.render("captcha", {
+            sitekey: SITEKEY,
+            theme: "dark",
+            callback: captchaSolved,
+            "expired-callback": () => {
+              status.textContent = "Срок действия проверки истёк. Пройдите её повторно.";
+              status.className = "status error";
+            },
+            "error-callback": () => {
+              status.textContent = "Не удалось выполнить hCaptcha. Проверьте домен сайта и подключение.";
+              status.className = "status error";
+            }
+          });
+          status.textContent = "Ожидаем подтверждения…";
+        } catch (error) {
+          status.textContent = "hCaptcha не запустилась. Разместите файл на разрешённом HTTP/HTTPS-домене.";
+          status.className = "status error";
+        }
+      };
+
+      if (location.protocol === "file:") localNote.hidden = false;
+      const captchaScript = document.createElement("script");
+      captchaScript.src = "https://js.hcaptcha.com/1/api.js?onload=__novaHCaptchaReady&render=explicit&hl=ru&recaptchacompat=off";
+      captchaScript.async = true;
+      captchaScript.defer = true;
+      captchaScript.onerror = () => {
+        status.textContent = "Не удалось загрузить hCaptcha. Проверьте подключение к интернету.";
+        status.className = "status error";
+      };
+      document.head.appendChild(captchaScript);
+
+      const license = document.getElementById("license");
+      const licenseWrap = document.getElementById("license-wrap");
+      const licenseError = document.getElementById("license-error");
+      const checkKey = document.getElementById("check-key");
+      license.addEventListener("input", () => {
+        checkKey.disabled = !license.value.trim();
+        licenseError.hidden = true;
+        licenseWrap.classList.remove("bad");
+      });
+      document.getElementById("license-form").addEventListener("submit", event => {
+        event.preventDefault();
+        checkKey.disabled = true;
+        checkKey.firstElementChild.textContent = "Проверяем…";
+        setTimeout(() => {
+          if (license.value.trim().toLowerCase() === LICENSE_KEY) {
+            showStage("warning", 2);
+          } else {
+            licenseError.hidden = false;
+            licenseWrap.classList.add("bad");
+            checkKey.disabled = false;
+            checkKey.firstElementChild.textContent = "Проверить ключ";
+            license.focus();
+          }
+        }, 520);
+      });
+
+      const confirm = document.getElementById("confirm");
+      const continueButton = document.getElementById("continue");
+      confirm.addEventListener("change", () => { continueButton.disabled = !confirm.checked; });
+      document.getElementById("cancel").addEventListener("click", () => {
+        confirm.checked = false;
+        continueButton.disabled = true;
+        license.value = "";
+        checkKey.disabled = true;
+        checkKey.firstElementChild.textContent = "Проверить ключ";
+        showStage("license", 1);
+        setTimeout(() => license.focus(), 30);
+      });
+      continueButton.addEventListener("click", () => {
+        if (!confirm.checked) return;
+        window.open(OFFICIAL_URL, "_blank", "noopener,noreferrer");
+      });
+    })();
+  </script>
+</body>
+</html>
