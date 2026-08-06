@@ -1,0 +1,360 @@
+!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="NOVA Access — проверка hCaptcha, лицензионный ключ и безопасный внешний переход.">
+  <title>NOVA Access — защищённый переход</title>
+  <style>
+    :root {
+      --ink:#0b0d0c; --panel:#121512; --raised:#181c18; --paper:#eef4e9;
+      --muted:#929b91; --line:rgba(238,244,233,.14); --acid:#c8ff47;
+      --danger:#ff725f; --safe:#73e2a7; --radius:25px;
+    }
+    * { box-sizing:border-box }
+    html { min-width:320px; background:var(--ink); scroll-behavior:smooth }
+    body {
+      min-height:100vh; margin:0; color:var(--paper);
+      background:
+        radial-gradient(circle at 78% 10%,rgba(200,255,71,.08),transparent 28rem),
+        radial-gradient(circle at 4% 90%,rgba(96,125,255,.08),transparent 25rem),
+        var(--ink);
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    button,input { font:inherit }
+    button,a,input,label { -webkit-tap-highlight-color:transparent }
+    button:focus-visible,a:focus-visible,input:focus-visible {
+      outline:2px solid var(--acid); outline-offset:3px;
+    }
+    [hidden] { display:none!important }
+    .shell { position:relative; min-height:100vh; overflow:hidden; isolation:isolate }
+    .shell:before {
+      position:absolute; inset:0; z-index:-2; content:"";
+      background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+      background-size:42px 42px; mask-image:linear-gradient(#000,transparent 90%);
+    }
+    .ring {
+      position:absolute; z-index:-1; top:-26rem; right:-24rem; width:58rem; height:58rem;
+      border:1px solid rgba(200,255,71,.14); border-radius:50%; pointer-events:none;
+      box-shadow:0 0 0 5rem rgba(200,255,71,.015),0 0 0 10rem rgba(200,255,71,.01);
+    }
+    .topbar {
+      display:flex; align-items:center; justify-content:space-between;
+      width:min(calc(100% - 48px),1260px); height:92px; margin:auto; border-bottom:1px solid var(--line);
+    }
+    .brand { display:flex; gap:12px; align-items:center; color:var(--paper); font:600 13px ui-monospace,monospace; letter-spacing:.08em }
+    .brand-mark { display:grid; width:32px; height:32px; place-items:center; border-radius:9px; background:var(--acid); color:var(--ink); font-weight:900; transform:rotate(-5deg) }
+    .brand b { color:var(--muted); font-weight:500 }
+    .online { display:flex; gap:9px; align-items:center; color:var(--muted); font:11px ui-monospace,monospace; letter-spacing:.08em; text-transform:uppercase }
+    .dot { width:7px; height:7px; border-radius:50%; background:var(--safe); box-shadow:0 0 0 5px rgba(115,226,167,.1); animation:pulse 2.4s ease-in-out infinite }
+    .layout {
+      display:grid; grid-template-columns:minmax(280px,.8fr) minmax(520px,1.2fr);
+      gap:clamp(48px,8vw,124px); align-items:center; width:min(calc(100% - 48px),1160px);
+      min-height:calc(100vh - 92px); margin:auto; padding:56px 0 72px;
+    }
+    .eyebrow,.kicker { margin:0 0 22px; color:var(--acid); font:650 11px ui-monospace,monospace; letter-spacing:.15em; text-transform:uppercase }
+    .intro h1 { margin:0; font-size:clamp(50px,6vw,82px); font-weight:600; letter-spacing:-.075em; line-height:.94 }
+    .intro h1 em { color:var(--acid); font-style:normal }
+    .lead { max-width:430px; margin:30px 0 0; color:#a8b0a6; font-size:16px; line-height:1.65 }
+    .facts { display:grid; grid-template-columns:repeat(3,1fr); max-width:440px; margin:52px 0 0; padding:0; border-top:1px solid var(--line) }
+    .facts div { padding:18px 10px 0 0 }
+    .facts dt { margin-bottom:7px; color:var(--acid); font:10px ui-monospace,monospace }
+    .facts dd { margin:0; color:var(--muted); font-size:12px }
+    .gate { width:100%; max-width:610px; justify-self:end }
+    .steps { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:14px }
+    .step { display:flex; gap:9px; align-items:center; min-width:0; color:#626a61; font:10px ui-monospace,monospace; letter-spacing:.08em; text-transform:uppercase; transition:.2s }
+    .step:after { flex:1; min-width:16px; height:1px; margin-left:4px; background:var(--line); content:"" }
+    .step:last-child:after { display:none }
+    .step.active,.step.done { color:var(--paper) }
+    .step.done:after { background:rgba(200,255,71,.42) }
+    .num { display:grid; flex:0 0 28px; width:28px; height:28px; place-items:center; border:1px solid var(--line); border-radius:50% }
+    .step.active .num { border-color:var(--acid); background:var(--acid); color:var(--ink); box-shadow:0 0 0 5px rgba(200,255,71,.08) }
+    .step.done .num { border-color:rgba(200,255,71,.35); color:var(--acid) }
+    .card {
+      position:relative; min-height:540px; overflow:hidden; border:1px solid rgba(238,244,233,.15);
+      border-radius:var(--radius); background:rgba(18,21,18,.94);
+      box-shadow:0 36px 90px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.035);
+      backdrop-filter:blur(20px);
+    }
+    .card:before { position:absolute; inset:0; content:""; opacity:.35; background-image:radial-gradient(rgba(255,255,255,.08) .6px,transparent .6px); background-size:7px 7px; mask-image:linear-gradient(130deg,#000,transparent 58%); pointer-events:none }
+    .stage { position:relative; z-index:1; display:flex; min-height:540px; padding:clamp(32px,5vw,56px); flex-direction:column; animation:enter .42s cubic-bezier(.22,.8,.28,1) both }
+    .stage h2 { max-width:460px; margin:0; font-size:clamp(32px,4.5vw,48px); font-weight:620; letter-spacing:-.055em; line-height:1.04 }
+    .desc { max-width:490px; margin:18px 0 0; color:var(--muted); font-size:15px; line-height:1.6 }
+    .captcha-box { display:grid; min-height:112px; margin-top:36px; padding:16px; border:1px solid var(--line); border-radius:17px; background:rgba(255,255,255,.025); place-items:center }
+    #captcha { display:grid; min-height:78px; place-items:center }
+    .status { margin:14px 0 0; color:var(--muted); font-size:12px; line-height:1.5 }
+    .status.error { padding:12px 14px; border:1px solid rgba(255,114,95,.25); border-radius:12px; background:rgba(255,114,95,.07); color:#ffc0b8 }
+    .local-note { margin-top:12px; padding:12px 14px; border:1px solid rgba(200,255,71,.2); border-radius:12px; background:rgba(200,255,71,.06); color:#cbd8bf; font-size:12px; line-height:1.5 }
+    .footnote { margin:auto 0 0; padding-top:28px; color:#6c746a; font-size:11px; line-height:1.5 }
+    .success { align-items:center; justify-content:center; text-align:center }
+    .success-badge { display:grid; width:112px; height:112px; margin-bottom:30px; border:1px solid rgba(200,255,71,.2); border-radius:50%; place-items:center; animation:orbit 2.2s ease-in-out infinite }
+    .success-badge span { display:grid; width:64px; height:64px; border-radius:50%; background:var(--acid); color:var(--ink); font-size:27px; font-weight:900; place-items:center; box-shadow:0 0 44px rgba(200,255,71,.2) }
+    .success .kicker { margin-bottom:14px }
+    .counter { display:flex; gap:7px; align-items:baseline; margin-top:24px }
+    .counter strong { color:var(--acid); font:500 44px ui-monospace,monospace }
+    .counter span { color:var(--muted); font:12px ui-monospace,monospace; text-transform:uppercase }
+    .bar { width:min(100%,310px); height:2px; margin-top:14px; overflow:hidden; border-radius:99px; background:var(--line) }
+    .bar span { display:block; width:100%; height:100%; background:var(--acid); transform-origin:left; animation:tick 1s linear both }
+    .form { margin-top:38px }
+    .form label { display:block; margin-bottom:10px; color:#aeb6ac; font:11px ui-monospace,monospace; letter-spacing:.07em; text-transform:uppercase }
+    .input-wrap { display:flex; align-items:center; height:64px; overflow:hidden; border:1px solid var(--line); border-radius:15px; background:rgba(0,0,0,.17); transition:.18s }
+    .input-wrap:focus-within { border-color:rgba(200,255,71,.65); box-shadow:0 0 0 4px rgba(200,255,71,.06) }
+    .input-wrap.bad { border-color:rgba(255,114,95,.7); animation:shake .26s ease }
+    .prefix { align-self:stretch; display:flex; align-items:center; padding:0 16px; border-right:1px solid var(--line); color:#626a61; font:11px ui-monospace,monospace }
+    .input-wrap input { width:100%; height:100%; padding:0 17px; border:0; outline:0; background:transparent; color:var(--paper); font:16px ui-monospace,monospace; letter-spacing:.04em }
+    .input-wrap input::placeholder { color:#555d54 }
+    .field-error { margin:10px 2px 0; color:#ff9b8e; font-size:12px; line-height:1.45 }
+    .primary,.secondary { min-height:58px; border-radius:14px; cursor:pointer; font-weight:700; transition:.16s }
+    .primary { display:flex; gap:14px; align-items:center; justify-content:space-between; width:100%; margin-top:16px; padding:0 20px; border:1px solid var(--acid); background:var(--acid); color:var(--ink) }
+    .primary:hover:not(:disabled),.secondary:hover { transform:translateY(-2px) }
+    .primary:disabled { border-color:#2c312b; background:#2c312b; color:#737a71; cursor:not-allowed }
+    .danger { color:var(--danger) }
+    .destinations { display:grid; gap:9px; margin-top:25px }
+    .destination { display:flex; gap:16px; align-items:center; justify-content:space-between; padding:13px 14px; border:1px solid var(--line); border-radius:13px; background:rgba(255,255,255,.02) }
+    .destination small,.destination strong { display:block }
+    .destination small { margin-bottom:3px; color:#687067; font-size:10px; letter-spacing:.08em; text-transform:uppercase }
+    .destination strong { color:#c8cec5; font:500 12px ui-monospace,monospace }
+    .tag { flex:0 0 auto; padding:5px 8px; border-radius:99px; font:9px ui-monospace,monospace; letter-spacing:.05em; text-transform:uppercase }
+    .blocked .tag { background:rgba(255,114,95,.1); color:#ff9f92 }
+    .safe { border-color:rgba(115,226,167,.18) }
+    .safe .tag { background:rgba(115,226,167,.09); color:var(--safe) }
+    .warning { display:flex; gap:13px; margin-top:16px; padding:15px; border:1px solid rgba(255,114,95,.2); border-radius:14px; background:rgba(255,114,95,.055) }
+    .bang { display:grid; flex:0 0 24px; width:24px; height:24px; place-items:center; border-radius:50%; background:var(--danger); color:var(--ink); font:800 13px ui-monospace,monospace }
+    .warning p { margin:1px 0 0; color:#c0a6a1; font-size:11px; line-height:1.5 }
+    .confirm { position:relative; display:flex; gap:12px; align-items:flex-start; margin-top:20px; color:#abb2a8; cursor:pointer; font-size:12px; line-height:1.5 }
+    .confirm input { position:absolute; width:1px; height:1px; opacity:0 }
+    .check { display:grid; flex:0 0 20px; width:20px; height:20px; margin-top:1px; place-items:center; border:1px solid #4c544b; border-radius:6px; color:transparent }
+    .confirm input:checked+.check { border-color:var(--acid); background:var(--acid); color:var(--ink) }
+    .confirm input:focus-visible+.check { outline:2px solid var(--acid); outline-offset:3px }
+    .actions { display:grid; grid-template-columns:.62fr 1.38fr; gap:10px; margin-top:22px }
+    .actions .primary { min-width:0; margin-top:0; font-size:12px }
+    .secondary { border:1px solid var(--line); background:transparent; color:#aeb5ac }
+    .meta { display:flex; justify-content:space-between; padding:14px 7px 0; color:#565d55; font:9px ui-monospace,monospace; letter-spacing:.08em; text-transform:uppercase }
+    @keyframes enter { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+    @keyframes pulse { 50%{opacity:.45} }
+    @keyframes orbit { 50%{transform:scale(1.045)} }
+    @keyframes tick { to{transform:scaleX(0)} }
+    @keyframes shake { 33%{transform:translateX(-5px)} 66%{transform:translateX(5px)} }
+    @media(max-width:930px){
+      .layout{grid-template-columns:1fr;gap:46px}.gate{max-width:none;justify-self:stretch}
+      .intro{display:grid;grid-template-columns:1fr minmax(260px,.72fr);column-gap:40px}.intro .eyebrow,.intro h1{grid-column:1}.lead,.facts{grid-column:2}.lead{align-self:end;margin-top:0}.facts{margin-top:22px}
+    }
+    @media(max-width:640px){
+      .topbar,.layout{width:min(calc(100% - 28px),1160px)}.topbar{height:72px}.online{font-size:0}.layout{display:block;min-height:auto;padding:38px 0 42px}
+      .intro{display:block}.intro h1{font-size:clamp(46px,14.5vw,68px)}.lead{margin-top:24px;font-size:14px}.facts{margin:32px 0 42px}.facts dd{font-size:10px}
+      .step-label{display:none}.step:after{min-width:34px}.card,.stage{min-height:565px}.card{border-radius:20px}.stage{padding:30px 22px}.stage h2{font-size:34px}
+      .captcha-box{margin-right:-8px;margin-left:-8px;padding:10px 2px}#captcha{transform:scale(.91)}.destination{align-items:flex-start;flex-direction:column}.actions{grid-template-columns:1fr}.actions .primary{grid-row:1}.meta{display:none}
+    }
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="ring" aria-hidden="true"></div>
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">N</span><span>NOVA <b>// ACCESS</b></span></div>
+      <div class="online"><span class="dot" aria-hidden="true"></span>Безопасный режим</div>
+    </header>
+
+    <main class="layout">
+      <aside class="intro">
+        <p class="eyebrow">Контроль доступа / 2026</p>
+        <h1>Один шаг<br>до <em>запуска.</em></h1>
+        <p class="lead">Пройдите короткую проверку, активируйте ключ и внимательно подтвердите внешний переход.</p>
+        <dl class="facts">
+          <div><dt>01</dt><dd>hCaptcha</dd></div>
+          <div><dt>02</dt><dd>Ключ доступа</dd></div>
+          <div><dt>03</dt><dd>Ваше решение</dd></div>
+        </dl>
+      </aside>
+
+      <section class="gate" aria-label="Контроль доступа">
+        <nav class="steps" aria-label="Этапы проверки">
+          <div class="step active" data-step="0"><span class="num">01</span><span class="step-label">Проверка</span></div>
+          <div class="step" data-step="1"><span class="num">02</span><span class="step-label">Ключ</span></div>
+          <div class="step" data-step="2"><span class="num">03</span><span class="step-label">Переход</span></div>
+        </nav>
+
+        <div class="card" aria-live="polite">
+          <section class="stage" id="stage-captcha">
+            <p class="kicker">Этап 01 · Проверка</p>
+            <h2>Подтвердите, что вы не робот</h2>
+            <p class="desc">Пройдите hCaptcha, чтобы открыть следующий этап.</p>
+            <div class="captcha-box"><div id="captcha"></div></div>
+            <p class="status" id="captcha-status">Загружаем безопасную проверку…</p>
+            <p class="local-note" id="local-note" hidden>Файл открыт напрямую. Для работы hCaptcha разместите его на HTTP/HTTPS‑хостинге; протокол <code>file://</code> обычно не поддерживается.</p>
+            <p class="footnote">Важно: в рабочем проекте токен hCaptcha нужно проверять на сервере через <code>siteverify</code>. Секрет нельзя помещать в этот HTML.</p>
+          </section>
+
+          <section class="stage success" id="stage-transition" hidden>
+            <div class="success-badge" aria-hidden="true"><span>✓</span></div>
+            <p class="kicker">Проверка завершена</p>
+            <h2>Вы прошли проверку</h2>
+            <p class="desc">Через <span id="count-word">3 секунды</span> откроется форма лицензионного ключа.</p>
+            <div class="counter"><strong id="counter">3</strong><span>сек.</span></div>
+            <div class="bar"><span id="count-bar"></span></div>
+          </section>
+
+          <section class="stage" id="stage-license" hidden>
+            <p class="kicker">Этап 02 · Активация</p>
+            <h2>Введите лицензионный ключ</h2>
+            <p class="desc">Укажите действующий ключ доступа, чтобы продолжить.</p>
+            <form class="form" id="license-form" novalidate>
+              <label for="license">Лицензионный ключ</label>
+              <div class="input-wrap" id="license-wrap"><span class="prefix">KEY—</span><input id="license" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="Введите ключ" required></div>
+              <p class="field-error" id="license-error" role="alert" hidden>Ключ не найден или введён неверно. Проверьте данные и попробуйте снова.</p>
+              <button class="primary" id="check-key" type="submit" disabled><span>Проверить ключ</span><span aria-hidden="true">↗</span></button>
+            </form>
+            <p class="footnote">Никому не передавайте свой персональный ключ доступа.</p>
+          </section>
+
+          <section class="stage" id="stage-warning" hidden>
+            <p class="kicker danger">Этап 03 · Внимание</p>
+            <h2>Вы покидаете наш сайт</h2>
+            <p class="desc">Запрошенная ссылка вела на непроверенный загрузчик. Опасный переход отключён; доступна только официальная страница игры.</p>
+            <div class="destinations">
+              <div class="destination blocked"><div><small>Заблокированный адрес</small><strong>l.utorria.ru</strong></div><span class="tag">Не используется</span></div>
+              <div class="destination safe"><div><small>Безопасная альтернатива</small><strong>innersloth.com</strong></div><span class="tag">Официальный сайт</span></div>
+            </div>
+            <div class="warning"><span class="bang" aria-hidden="true">!</span><p>Загружайте игру только из источника, которому доверяете. Перед запуском любого файла проверьте его антивирусом.</p></div>
+            <label class="confirm"><input id="confirm" type="checkbox"><span class="check" aria-hidden="true">✓</span><span>Я понимаю, что официальный внешний сайт откроется в новой вкладке.</span></label>
+            <div class="actions">
+              <button class="secondary" id="cancel" type="button">Отмена</button>
+              <button class="primary" id="continue" type="button" disabled><span>Открыть официальный сайт</span><span aria-hidden="true">↗</span></button>
+            </div>
+          </section>
+        </div>
+        <div class="meta"><span>hCaptcha UI</span><span>Без автозагрузки</span><span>RU</span></div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+      const SITEKEY = "43b073bc-6ca4-4c94-9b6a-3c2e660a86ae";
+      const LICENSE_KEY = "htm-s-d-s";
+      const OFFICIAL_URL = "https://www.innersloth.com/games/among-us/";
+      const stages = {
+        captcha: document.getElementById("stage-captcha"),
+        transition: document.getElementById("stage-transition"),
+        license: document.getElementById("stage-license"),
+        warning: document.getElementById("stage-warning")
+      };
+      const stepNodes = [...document.querySelectorAll(".step")];
+      const status = document.getElementById("captcha-status");
+      const localNote = document.getElementById("local-note");
+      let widgetId = null;
+
+      function showStage(name, activeStep) {
+        Object.entries(stages).forEach(([key, node]) => { node.hidden = key !== name; });
+        stepNodes.forEach((node, index) => {
+          node.classList.toggle("active", index === activeStep);
+          node.classList.toggle("done", index < activeStep);
+          node.querySelector(".num").textContent = index < activeStep ? "✓" : String(index + 1).padStart(2, "0");
+        });
+      }
+
+      function captchaSolved() {
+        showStage("transition", 0);
+        let left = 3;
+        const counter = document.getElementById("counter");
+        const countWord = document.getElementById("count-word");
+        const bar = document.getElementById("count-bar");
+        const timer = setInterval(() => {
+          left -= 1;
+          if (left <= 0) {
+            clearInterval(timer);
+            showStage("license", 1);
+            setTimeout(() => document.getElementById("license").focus(), 30);
+            return;
+          }
+          counter.textContent = left;
+          countWord.textContent = left === 1 ? "1 секунду" : left + " секунды";
+          bar.style.animation = "none";
+          void bar.offsetWidth;
+          bar.style.animation = "tick 1s linear both";
+        }, 1000);
+      }
+
+      window.__novaHCaptchaReady = () => {
+        try {
+          widgetId = window.hcaptcha.render("captcha", {
+            sitekey: SITEKEY,
+            theme: "dark",
+            callback: captchaSolved,
+            "expired-callback": () => {
+              status.textContent = "Срок действия проверки истёк. Пройдите её повторно.";
+              status.className = "status error";
+            },
+            "error-callback": () => {
+              status.textContent = "Не удалось выполнить hCaptcha. Проверьте домен сайта и подключение.";
+              status.className = "status error";
+            }
+          });
+          status.textContent = "Ожидаем подтверждения…";
+        } catch (error) {
+          status.textContent = "hCaptcha не запустилась. Разместите файл на разрешённом HTTP/HTTPS-домене.";
+          status.className = "status error";
+        }
+      };
+
+      if (location.protocol === "file:") localNote.hidden = false;
+      const captchaScript = document.createElement("script");
+      captchaScript.src = "https://js.hcaptcha.com/1/api.js?onload=__novaHCaptchaReady&render=explicit&hl=ru&recaptchacompat=off";
+      captchaScript.async = true;
+      captchaScript.defer = true;
+      captchaScript.onerror = () => {
+        status.textContent = "Не удалось загрузить hCaptcha. Проверьте подключение к интернету.";
+        status.className = "status error";
+      };
+      document.head.appendChild(captchaScript);
+
+      const license = document.getElementById("license");
+      const licenseWrap = document.getElementById("license-wrap");
+      const licenseError = document.getElementById("license-error");
+      const checkKey = document.getElementById("check-key");
+      license.addEventListener("input", () => {
+        checkKey.disabled = !license.value.trim();
+        licenseError.hidden = true;
+        licenseWrap.classList.remove("bad");
+      });
+      document.getElementById("license-form").addEventListener("submit", event => {
+        event.preventDefault();
+        checkKey.disabled = true;
+        checkKey.firstElementChild.textContent = "Проверяем…";
+        setTimeout(() => {
+          if (license.value.trim().toLowerCase() === LICENSE_KEY) {
+            showStage("warning", 2);
+          } else {
+            licenseError.hidden = false;
+            licenseWrap.classList.add("bad");
+            checkKey.disabled = false;
+            checkKey.firstElementChild.textContent = "Проверить ключ";
+            license.focus();
+          }
+        }, 520);
+      });
+
+      const confirm = document.getElementById("confirm");
+      const continueButton = document.getElementById("continue");
+      confirm.addEventListener("change", () => { continueButton.disabled = !confirm.checked; });
+      document.getElementById("cancel").addEventListener("click", () => {
+        confirm.checked = false;
+        continueButton.disabled = true;
+        license.value = "";
+        checkKey.disabled = true;
+        checkKey.firstElementChild.textContent = "Проверить ключ";
+        showStage("license", 1);
+        setTimeout(() => license.focus(), 30);
+      });
+      continueButton.addEventListener("click", () => {
+        if (!confirm.checked) return;
+        window.open(OFFICIAL_URL, "_blank", "noopener,noreferrer");
+      });
+    })();
+  </script>
+</body>
+</html>
